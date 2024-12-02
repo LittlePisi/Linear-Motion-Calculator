@@ -4,6 +4,7 @@ import InputParameters from './components/InputParameters';
 import ResultsDisplay from './components/ResultsDisplay';
 import { calculateMotionParameters } from './utils/motionCalculations';
 import { MotionParameters, MotionResults } from './types';
+import mainLogo from '../logo.svg';
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);
@@ -49,7 +50,7 @@ function App() {
     }`}>
       <div className="container mx-auto px-4 py-8">
         <header className="text-center mb-12">
-          <img class="logo-picture" src="/logo.svg" width="150" height="150" align='left' />
+          <img class="logo-picture" src={mainLogo} width="150" height="150" align='left' />
           <br></br> 
           <br></br> 
           <div className="flex items-center justify-center gap-3 mb-4">
