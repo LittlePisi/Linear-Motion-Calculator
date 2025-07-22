@@ -22,9 +22,9 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
     { label: 'Внешнее усилие', key: 'externalForce', unit: 'Н', step: 1, min: 0 },
     { label: 'Момент холостого хода', key: 'idleTorque', unit: 'Н⋅м', step: 0.1, min: 0 },
     { label: 'Постоянная подачи', key: 'lead', unit: 'мм/об', step: 1, min: 0 },
-    { label: 'Внешняя инерция', key: 'externalInertia', unit: 'кг⋅м²', step: 0.0001, min: 0 },
+    { label: 'Внешняя инерция', key: 'externalInertia', unit: 'кг⋅см²', step: 0.01, min: 0 },
     { label: 'Передаточное число', key: 'reductionRatio', unit: ':1', step: 0.1, min: 0 },
-    { label: 'Инерция двигателя', key: 'motorRotorInertia', unit: 'кг⋅м²', step: 0.00001, min: 0 },
+    { label: 'Инерция двигателя', key: 'motorRotorInertia', unit: 'кг⋅см²', step: 0.01, min: 0 },
     { label: 'Время паузы', key: 'pauseTime', unit: 'с', step: 0.1, min: 0 },
   ];
 
