@@ -79,7 +79,9 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
   let t3: number;
   let maxSpeedStroke: number | undefined;
   let velocityAtMaxSpeed: number | undefined;
-
+  let motorRotorInertiaScaled = motorRotorInertia / 10000;
+  let externalInertiaScaled = externalInertia / 10000;
+  
   if (useMaxSpeedMode) {
     // Calculate using max speed mode
     v1 = maxSpeed!;
@@ -126,10 +128,10 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
   const mrpm = (v1/1000 * 60 ) / leadInMeters; // перемещено с 176 строки
   
   // Calculate load inertia referred to motor shaft
-  const loadInertia = (mass * Math.pow(leadInMeters / (2 * Math.PI), 2) + externalInertia) / (reductionRatio * reductionRatio);
+  const loadInertia = (mass * Math.pow(leadInMeters / (2 * Math.PI), 2) + externalInertiaScaled) / (reductionRatio * reductionRatio);
 
   // Calculate inertia ratio
-  const inertiaRatio = 1 + loadInertia / motorRotorInertia;
+  const inertiaRatio = 1 + loadInertia / motorRotorInertiaScaled;
 
   const totalTime = t1 + t2 + t3 + pauseTime;
   const totalPoints = Math.ceil(totalTime * POINTS_PER_SECOND);
@@ -145,8 +147,8 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
 
   // Calculate dynamic torques for each phase
   //  const angAcceleration =((Math.PI * mrpm)/(30 * t1));
-  const dynamicTorqueA = (loadInertia + motorRotorInertia) * ((Math.PI * mrpm)/(30 * t1));
-  const dynamicTorqueD = (loadInertia + motorRotorInertia) * ((Math.PI * mrpm)/(30 * t3));
+  const dynamicTorqueA = (loadInertia + motorRotorInertiaScaled) * ((Math.PI * mrpm)/(30 * t1));
+  const dynamicTorqueD = (loadInertia + motorRotorInertiaScaled) * ((Math.PI * mrpm)/(30 * t3));
 
   // Calculate total torques for each phase
   const accelerationTorque = dynamicTorqueA + constantLoadTorque;
