@@ -8,11 +8,11 @@ import { MotionParameters, MotionResults } from './types';
 function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [params, setParams] = useState<MotionParameters>({
-    stroke: 350,
-    travelTime: 0.35,
-    acceleration: 15000,
-    deceleration: 15000,
-    mass: 20,
+    stroke: 1000,
+    travelTime: 2,
+    acceleration: 2000,
+    deceleration: 2000,
+    mass: 10,
     lead: 176,
     externalInertia: 0.0001,
     reductionRatio: 1,
@@ -20,13 +20,13 @@ function App() {
     pauseTime: 0.3,
     maxSpeed: 500,
     useMaxSpeedMode: false,
-    isVertical: true,
+    isVertical: false,
     showTorque: true,
     showRPM: true,
     showVelocity: true,
     showPosition: true,
-    externalForce: 3700,
-    idleTorque: 0
+    externalForce: 50,
+    idleTorque: 0.5
   });
 
   const [results, setResults] = useState<MotionResults | null>(null);
