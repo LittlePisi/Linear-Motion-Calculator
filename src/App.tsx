@@ -4,11 +4,12 @@ import InputParameters from './components/InputParameters';
 import ResultsDisplay from './components/ResultsDisplay';
 import { calculateMotionParameters } from './utils/motionCalculations';
 import { MotionParameters, MotionResults } from './types';
+import { useLocalStorage } from './hooks/useLocalStorage';
 import mainLogo from '../logo.svg';
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);
-  const [params, setParams] = useState<MotionParameters>({
+  const [params, setParams] = useLocalStorage<MotionParameters>('motionCalculatorParams', {
     stroke: 1000,
     travelTime: 2,
     acceleration: 3000,
