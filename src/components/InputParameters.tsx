@@ -47,7 +47,13 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
           <h2 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
             Ввод параметров
           </h2>
-          <div className="flex gap-2">
+          
+        </div>
+      </div>
+      
+      <div className="space-y-3">
+
+        <div className="flex gap-2">
             <button
               onClick={() => setParams({ ...params, isVertical: !params.isVertical })}
               className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors ${
@@ -57,26 +63,29 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
               }`}
               title={params.isVertical ? 'Vertical Application' : 'Horizontal Application'}
             >
-              {params.isVertical ? <ArrowUp className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
+              {params.isVertical ? <ArrowUp className="w-30 h-4" />  : <ArrowRight className="w-30 h-4" />}
+                  <span className="hidden sm:inline">
+                    {params.isVertical ? 'Вертикальный' : 'Горизонтальный'}
+                  </span>
             </button>
-            <button
-              onClick={() => setParams({ ...params, useMaxSpeedMode: !params.useMaxSpeedMode })}
-              className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors ${
-                darkMode 
-                  ? 'bg-gray-700 text-gray-200 hover:bg-gray-600' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline">
-                {params.useMaxSpeedMode ? 'Время перемещения' : 'Максимальная скорость'}
-              </span>
-            </button>
+            
           </div>
+       
+        <div className="flex gap-2">
+            <button
+                  onClick={() => setParams({ ...params, useMaxSpeedMode: !params.useMaxSpeedMode })}
+                  className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors ${
+                    darkMode 
+                      ? 'bg-gray-700 text-gray-200 hover:bg-gray-600' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  <Settings className="w-30 h-4" />
+                  <span className="hidden sm:inline">
+                    {params.useMaxSpeedMode ? 'Максимальная скорость' : 'Время перемещения'}
+                  </span>
+                </button>
         </div>
-      </div>
-      
-      <div className="space-y-3">
         {/* Mode-specific parameters */}
         {(params.useMaxSpeedMode ? maxSpeedParameters : travelTimeParameters).map(({ label, key, unit, step, min }) => (
           <div key={key} className="flex items-center gap-2">
