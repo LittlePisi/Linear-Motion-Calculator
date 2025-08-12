@@ -136,24 +136,24 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
   const totalTime = t1 + t2 + t3 + pauseTime;
   const totalPoints = Math.ceil(totalTime * POINTS_PER_SECOND);
   const timeStep = totalTime / totalPoints;
-
+  
   // Scale idle torque according to reduction ratio
-  const scaledIdleTorque = idleTorque / reductionRatio;
+  const scaledIdleTorque = (idleTorque + M_idleTorque);
 
   // Calculate constant torques
-  const gravityTorque = isVertical ? (mass * GRAVITY * leadInMeters) / (2 * Math.PI * reductionRatio) : 0;
-  const externalTorque = ((externalForce * ((leadInMeters) / (2 * Math.PI))) / reductionRatio);
+  const gravityTorque = isVertical ? (mass * GRAVITY * leadInMeters) / (2 * Math.PI ) : 0;
+  const externalTorque = ((externalForce * ((leadInMeters) / (2 * Math.PI))) );
   const constantLoadTorque = gravityTorque + externalTorque + scaledIdleTorque;
 
   // Calculate dynamic torques for each phase
-  //  const angAcceleration =((Math.PI * mrpm)/(30 * t1));
+    const angAcceleration =((Math.PI * mrpm)/(30 * t1));
   const dynamicTorqueA = (loadInertia + motorRotorInertiaScaled) * ((Math.PI * mrpm)/(30 * t1));
   const dynamicTorqueD = (loadInertia + motorRotorInertiaScaled) * ((Math.PI * mrpm)/(30 * t3));
 
   // Calculate total torques for each phase
-  const accelerationTorque = dynamicTorqueA + constantLoadTorque;
-  const constantVelocityTorque = constantLoadTorque;
-  const decelerationTorque = dynamicTorqueD - constantLoadTorque;
+  const accelerationTorque = (dynamicTorqueA + constantLoadTorque) / reductionRatio;
+  const constantVelocityTorque = (constantLoadTorque) / reductionRatio;
+  const decelerationTorque = (dynamicTorqueD - constantLoadTorque) / reductionRatio;
 
   for (let i = 0; i <= totalPoints; i++) {
     const time = i * timeStep;
