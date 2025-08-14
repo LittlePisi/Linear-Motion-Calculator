@@ -138,7 +138,7 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
   const timeStep = totalTime / totalPoints;
   
   // Scale idle torque according to reduction ratio
-  const scaledIdleTorque = (idleTorque + M_idleTorque);
+  const scaledIdleTorque = (idleTorque);
 
   // Calculate constant torques
   const gravityTorque = isVertical ? (mass * GRAVITY * leadInMeters) / (2 * Math.PI ) : 0;
