@@ -32,6 +32,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
     { label: 'Среднеквадратичный момент', value: results.meanTorque.toFixed(2), unit: 'Н⋅м' },
     { label: 'Макс. скорость вращения вала двигателя', value: results.maxRPM.toFixed(0), unit: 'об/мин' },
     { label: 'Ср. скорость вращения вала двигателя', value: results.meanRPM.toFixed(0), unit: 'об/мин' },
+//    { label: 'Загрузка привода', value: results.LM_loadRatio.toFixed(0), unit: '%' },
+//    { label: 'Загрузка редуктора', value: results.GB_loadRatio.toFixed(0), unit: '%' },
+//    { label: 'Загрузка двигателя', value: results.M_loadRatio.toFixed(0), unit: '%' },
 //    { label: 'Тест: #*2', value: results.calcValue.toFixed(4), unit: '' },
 //    { label: 'Acceleration torque', value: results.accelerationTorque.toFixed(3), unit: 'Н⋅м' },
 //    { label: 'decelerationTorque', value: results.decelerationTorque.toFixed(3), unit: 'Н⋅м' },
@@ -72,6 +75,43 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
               )}
             </p>
           </div>
+
+          <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} ${results.LM_loadRatio > 90 ? darkMode ? 'bg-red-900' : 'bg-red-50' : ''}`}>
+            <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Загрузка привода</p>
+            <p className={`text-lg font-semibold ${results.LM_loadRatio > 90 ? 'text-red-600' : darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
+              {results.LM_loadRatio.toFixed(0)} %
+              {results.LM_loadRatio > 90 && (
+                <span className="block text-sm font-normal">
+                  Предупреждение: Не рекомендуется использование при загрузке 90% и выше
+                </span>
+              )}
+            </p>
+          </div>
+          
+          <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} ${results.GB_loadRatio > 90 ? darkMode ? 'bg-red-900' : 'bg-red-50' : ''}`}>
+            <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Загрузка редуктора</p>
+            <p className={`text-lg font-semibold ${results.GB_loadRatio > 90 ? 'text-red-600' : darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
+              {results.GB_loadRatio.toFixed(0)} %
+              {results.GB_loadRatio > 90 && (
+                <span className="block text-sm font-normal">
+                  Предупреждение: Не рекомендуется использование при загрузке 90% и выше
+                </span>
+              )}
+            </p>
+          </div>
+
+          <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} ${results.M_loadRatio > 90 ? darkMode ? 'bg-red-900' : 'bg-red-50' : ''}`}>
+            <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Загрузка двигателя</p>
+            <p className={`text-lg font-semibold ${results.M_loadRatio > 90 ? 'text-red-600' : darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
+              {results.M_loadRatio.toFixed(0)} %
+              {results.M_loadRatio > 90 && (
+                <span className="block text-sm font-normal">
+                  Предупреждение: Не рекомендуется использование при загрузке 90% и выше
+                </span>
+              )}
+            </p>
+          </div>
+
         </div>
       </div>
       {results && (
