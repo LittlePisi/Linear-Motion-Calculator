@@ -224,6 +224,12 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
 
     const calcValue = M_nom;
 
+
+ // Components load ratio
+    const LM_loadRatio = (meanTorque * reductionRatio) / M_maxTorque * 100;
+    const GB_loadRatio = (maxTorque * reductionRatio) / G_maxTorque * 100;
+    const M_loadRatio =  meanTorque / M_nom * 100;    
+
     if (M_maxTorque <= (maxTorque * reductionRatio)) throw new Error('Превышение допустимого момента для привода. Выберите больший типоразмер привода или шаг винта.');
     if (G_maxTorque <= (maxTorque * reductionRatio)) throw new Error('Превышение допустимого момента для редуктора. Выберите больший типоразмер или другое передаточное число.');
 //    if (M_max <= (maxTorque)) throw new Error('Превышение максимального момента двигателя. Выберите больший типоразмер или измените другие параметры расчёта.');
@@ -252,6 +258,9 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     constantLoadTorque,
     dynamicTorqueA,
     dynamicTorqueD,
+    LM_loadRatio,
+    GB_loadRatio,
+    M_loadRatio,
 //    constantLoadTorque,
 //   loadInertia,
 //    angAcceleration,
