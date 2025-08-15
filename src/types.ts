@@ -57,6 +57,9 @@ export interface MotionResults {
   constantLoadTorque: number;
   dynamicTorqueA: number;
   dynamicTorqueD: number;
+  LM_loadRatio: number;
+  GB_loadRatio: number;
+  M_loadRatio: number;
 //  constantLoadTorque: number;
 //  loadInertia: number;
 //  angAcceleration: number;
