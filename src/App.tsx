@@ -13,9 +13,9 @@ function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [params, setParams] = useLocalStorage<MotionParameters>('motionCalculatorParams', {
     stroke: 1000,
-    travelTime: 2,
-    acceleration: 2000,
-    deceleration: 2000,
+    travelTime: 3,
+    acceleration: 1000,
+    deceleration: 1000,
     mass: 10,
     lead: 176,
     externalInertia: 0.0001,
