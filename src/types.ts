@@ -1,0 +1,73 @@
+export interface MotionParameters {
+  stroke: number;
+  travelTime: number;
+  acceleration: number;
+  deceleration: number;
+  mass: number;
+  lead: number;
+  externalInertia: number;
+  reductionRatio: number;
+  motorRotorInertia: number;
+  pauseTime: number;
+  maxSpeed?: number;
+  useMaxSpeedMode: boolean;
+  isVertical: boolean;
+  showTorque: boolean;
+  showRPM: boolean;
+  showVelocity: boolean;
+  showPosition: boolean;
+  externalForce: number;
+  idleTorque: number;
+  value: number;
+  M_idleTorque: number;
+  M_zsInertia: number;
+  M_pmInertia: number;
+  M_maxTorque: number;
+  G_idleTorque: number;
+  G_Inertia: number;
+  G_eff: number;
+  G_maxTorque: number;
+  selectedLMSetName: string;
+  selectedGBSetName: string;
+  selectedMTSetName: string;
+  M_nom: number;
+  N_nom: number;
+  M_max: number;
+  N_max: number;
+}
+
+export interface MotionResults {
+  maxVelocity: number;
+  velocityAtMaxSpeed?: number;
+  accelerationTime: number;
+  constantVelocityTime: number;
+  decelerationTime: number;
+  pauseTime: number;
+  totalCycleTime: number;
+  maxTorque: number;
+  meanTorque: number;
+  maxRPM: number;
+  meanRPM: number;
+  inertiaRatio: number;
+  torqueProfile: TorquePoint[];
+  maxSpeedStroke?: number;
+  calcValue: number;
+  accelerationTorque: number;
+  decelerationTorque: number;
+  constantLoadTorque: number;
+  dynamicTorqueA: number;
+  dynamicTorqueD: number;
+//  constantLoadTorque: number;
+//  loadInertia: number;
+//  angAcceleration: number;
+//  mrpm: number;
+//  v1: number;
+}
+
+export interface TorquePoint {
+  time: number;
+  torque: number;
+  rpm: number;
+  position: number;
+  velocity: number;
+}
