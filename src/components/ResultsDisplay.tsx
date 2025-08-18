@@ -12,8 +12,9 @@ interface ResultsDisplayProps {
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMode }) => {
   if (error) {
     return (
-      <div className="text-red-500 bg-red-50 p-4 rounded-lg">
-        <p className="font-medium">Error: {error}</p>
+      <div className={`p-6 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
+        <p className={`text-xl font-bold ${darkMode ? 'text-red-500' : 'text-red-500'}`}>Ошибка:</p>
+        <p className={`text-md font-semibold ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{error}</p>
       </div>
     );
   }
