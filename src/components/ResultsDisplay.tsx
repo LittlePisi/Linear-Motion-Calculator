@@ -12,7 +12,7 @@ interface ResultsDisplayProps {
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMode }) => {
   if (error) {
     return (
-      <div className={`p-6 rounded-xl   ${darkMode ? 'bg-gradient-to-tr from-gray-800 from-75% to-red-600' : 'bg-white'} shadow-lg`}>
+      <div className={`p-6 rounded-xl   ${darkMode ? 'bg-gradient-to-t from-gray-800 from-90% to-red-600' : 'bg-white'} shadow-lg`}>
         <p className={`text-xl  font-semibold ${darkMode ? 'text-red-500' : 'text-red-500'}`}>Ошибка:</p>
         <p className={`text-md font-semibold ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{error}</p>
       </div>
