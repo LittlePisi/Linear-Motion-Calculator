@@ -13,9 +13,9 @@ function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [params, setParams] = useLocalStorage<MotionParameters>('motionCalculatorParams', {
     stroke: 1000,
-    travelTime: 3,
-    acceleration: 1000,
-    deceleration: 1000,
+    travelTime: 2,
+    acceleration: 2000,
+    deceleration: 2000,
     mass: 10,
     lead: 176,
     externalInertia: 0.0001,
@@ -29,17 +29,16 @@ function App() {
     showRPM: true,
     showVelocity: true,
     showPosition: true,
-    externalForce: 50,
+    externalForce: 0,
     idleTorque: 0.5,
     M_idleTorque: 1,
     M_zsInertia: 1,
-    M_pmInertia: "1",
-    M_pmInertia: "1",
-    M_maxTorque: "1",
+    M_pmInertia: 1,
+    M_maxTorque: "10",
     G_idleTorque: 1,
     G_Inertia: 1,
     G_eff: 1,
-    G_maxTorque: 1,
+    G_maxTorque: 10,
     M_nom: 1,
     N_nom: 2000,
     M_max: 1,
@@ -151,6 +150,8 @@ function App() {
           <p>• Также, он проводит расчёт соотношения моментов инерции на основе введенных данных по собственной инерции ротора двигателя.</p>
           <p>• Калькулятор может расчитывать как вертикальные, так и горизонтальные применения. Для переключения между режимами предусмотрена кнопка со стрелкой. Положение стрелки указывает выбранную в данный момент схему.</p>
           <p>• Расчет может проводиться как от общего времени перемещения, так и от максимальной скорости. Для переключения между режимами предусмотрена кнопка.</p>
+          <p>• Компания SMARTA не несет ответственности за претензии, связанные с неспособностью достичь рассчитанных результатов, в том числе в случае ошибок в расчетах.</p>
+          <p>• Компания SMARTA не гарантирует пригодность любого оборудования, заказанного в соответствии с использованием этого программного обеспечения для какой-либо конкретной цели, если эта цель не была полностью объяснена компании SMARTA.</p>
         </div>
       </div>
     </div>
