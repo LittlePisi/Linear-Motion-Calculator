@@ -173,7 +173,7 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
                 step={step}
                 min={min}
                 className={`w-full pl-3 pr-3 py-1.5 rounded-lg outline-none transition-colors ${
-                  darkMode ? 'bg-gray-700 border-gray-600 text-gray-200 focus:border-gray-500'
+                  darkMode ? 'bg-gray-700 border border-gray-600 text-gray-200 focus:border-gray-500'
                            : 'border border-gray-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500'
                 }`}
               />
@@ -195,7 +195,7 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
                 step={step}
                 min={min}
                 className={`w-full pl-3 pr-3 py-1.5 rounded-lg outline-none transition-colors ${
-                  darkMode ? 'bg-gray-700 border-gray-600 text-gray-200 focus:border-gray-500'
+                  darkMode ? 'bg-gray-700 border border-gray-600 text-gray-200 focus:border-gray-500'
                            : 'border border-gray-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500'
                 }`}
               />
