@@ -144,9 +144,11 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
   // Linear module full inertia
 
   const Mod_fullInertia = M_zsInertia + (M_pmInertia * stroke/1000);
+  console.log({Mod_fullInertia});
 
   // Calculate load inertia referred to motor shaft
   const loadInertia = (mass * Math.pow(leadInMeters / (2 * Math.PI), 2) + externalInertiaScaled + Mod_fullInertia + G_Inertia);
+  console.log({loadInertia});
 
   // Calculate inertia ratio
   const inertiaRatio = 1 + ((loadInertia / Math.pow(reductionRatio, 2)) / motorRotorInertiaScaled);
@@ -156,22 +158,31 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
   const timeStep = totalTime / totalPoints;
 
   // Scale idle torque according to reduction ratio
-  const scaledIdleTorque = (idleTorque + M_idleTorque + G_idleTorque);
+  const scaledIdleTorque = (M_idleTorque);
+  console.log({scaledIdleTorque});
 
   // Calculate constant torques
   const gravityTorque = isVertical ? (mass * GRAVITY * leadInMeters) / (2 * Math.PI ) : 0;
+  console.log({gravityTorque});
   const externalTorque = ((externalForce * ((leadInMeters) / (2 * Math.PI))) );
+  console.log({externalTorque});
   const constantLoadTorque = gravityTorque + externalTorque + scaledIdleTorque;
+  console.log({constantLoadTorque});
 
   // Calculate dynamic torques for each phase
   //const angAcceleration =((Math.PI * mrpm)/(30 * t1));
   const dynamicTorqueA = (loadInertia + motorRotorInertiaScaled) * ((Math.PI * mrpm)/(30 * t1));
+  console.log({dynamicTorqueA});
   const dynamicTorqueD = (loadInertia + motorRotorInertiaScaled) * ((Math.PI * mrpm)/(30 * t3));
+  console.log({dynamicTorqueD});
 
   // Calculate total torques for each phase
-  const accelerationTorque = ((dynamicTorqueA + constantLoadTorque) / reductionRatio) / G_eff;
-  const constantVelocityTorque = ((constantLoadTorque) / reductionRatio) / G_eff;
-  const decelerationTorque = ((dynamicTorqueD - constantLoadTorque) / reductionRatio) / G_eff;
+  const accelerationTorque = (((dynamicTorqueA + constantLoadTorque) / reductionRatio) / G_eff) + G_idleTorque;
+  console.log({accelerationTorque});
+  const constantVelocityTorque = (((constantLoadTorque) / reductionRatio) / G_eff) + G_idleTorque;
+  console.log({constantVelocityTorque});
+  const decelerationTorque = (((dynamicTorqueD - constantLoadTorque) / reductionRatio) / G_eff) + G_idleTorque;
+  console.log({decelerationTorque});
 
   for (let i = 0; i <= totalPoints; i++) {
     const time = i * timeStep;
@@ -204,7 +215,8 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
       velocity: velocity * 1000 // Convert back to mm/s
     });
 
-    console.log(torqueProfile);
+    //console.log(torqueProfile);
+    
 
     sumTorque += Math.abs(torque);
 //    sumTorque += Math.max( Math.abs(accelerationTorque) , Math.abs(decelerationTorque) )
@@ -227,8 +239,11 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
 
  // Components load ratio
     const LM_loadRatio = (meanTorque * reductionRatio) / M_maxTorque * 100;
+
     const GB_loadRatio = (maxTorque * reductionRatio) / G_maxTorque * 100;
-    const M_loadRatio =  meanTorque / M_nom * 100;    
+
+    const M_loadRatio =  meanTorque / M_nom * 100;
+
 
     if (M_maxTorque <= (maxTorque * reductionRatio)) throw new Error('Превышение допустимого момента для привода. Выберите больший типоразмер привода или шаг винта.');
     if (G_maxTorque <= (maxTorque * reductionRatio)) throw new Error('Превышение допустимого момента для редуктора. Выберите больший типоразмер или другое передаточное число.');
@@ -236,6 +251,14 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     if (M_nom <= (meanTorque)) throw new Error('Превышение номинального момента двигателя. Выберите больший типоразмер или измените другие параметры расчёта.');
     if (N_nom <= (meanRPM)) throw new Error('Превышение номинальной скорости двигателя. Выберите редуктор с меньшим передаточным числом или измените другие параметры расчёта.');
 //    if (M_max <= (maxRPM)) throw new Error('Превышение максимальной скорости двигателя. Выберите редуктор с меньшим передаточным числом или измените другие параметры расчёта.');
+
+    
+    console.log({meanRPM});
+    console.log({maxRPM});
+    console.log({meanTorque});
+    console.log({maxTorque});
+
+
 
   return {
     maxVelocity: v1,
