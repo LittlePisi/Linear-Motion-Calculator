@@ -113,7 +113,8 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
       </div>
 
       <div className="space-y-3">
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center ">
+          <label className={`text-sm w-1/3 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Ориентация</label>
           <button
             onClick={() => setParams(prev => ({ ...prev, isVertical: !prev.isVertical }))}
             className={`flex items-center gap-1 w-2/3 px-3 py-1.5 rounded-lg transition-colors ${
@@ -126,7 +127,8 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
           </button>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center ">
+          <label className={`text-sm w-1/3 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Метод расчёта</label>
           <button
             onClick={() => setParams(prev => ({ ...prev, useMaxSpeedMode: !prev.useMaxSpeedMode }))}
             className={`flex items-center w-2/3 gap-1 px-3 py-1.5 rounded-lg transition-colors ${
