@@ -83,9 +83,9 @@ const GBComboBox: React.FC<GBComboBoxProps> = ({
         id="gearbox-parameterSet"
         value={selectedGBSetName}
         onChange={(e) => handleChange(e.target.value)}
-        className={`mt-0 px-3 block w-full ml-auto h-9 text-sm rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm ${
-          darkMode ? 'bg-gray-700 border-gray-600 text-gray-200 focus:border-gray-500'
-                   : 'border-gray-300 text-gray-700 focus:border-indigo-500'
+        className={`mt-0 px-3 block w-full h-9 text-sm rounded-lg shadow-sm focus:border-blue-400 focus:ring-blue-300 sm:text-sm ${
+          darkMode ? 'bg-gray-700 border border-gray-600 text-gray-200 focus:border-gray-500'
+                   : ' border border-gray-300 text-gray-700 focus:border-blue-500'
         }`}
       >
         {parameterSets.map((set) => (
