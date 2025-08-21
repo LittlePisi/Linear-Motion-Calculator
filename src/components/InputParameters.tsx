@@ -79,9 +79,9 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
   };
 
   const commonParameters = [
-    { label: 'Рабочий ход', key: 'stroke', unit: 'мм', step: 1, min: 0 },
-    { label: 'Перемещаемая масса', key: 'mass', unit: 'кг', step: 0.1, min: 0 },
-    { label: 'Внешнее усилие', key: 'externalForce', unit: 'Н', step: 1, min: 0 },
+    { label: 'Рабочий ход', key: 'stroke', unit: 'мм', step: 10, min: 0 },
+    { label: 'Перемещаемая масса', key: 'mass', unit: 'кг', step: 1, min: 0 },
+    { label: 'Внешнее усилие', key: 'externalForce', unit: 'Н', step: 10, min: 0 },
 //    { label: 'Момент холостого хода', key: 'idleTorque', unit: 'Н⋅м', step: 0.1, min: 0 },
 //    { label: 'Постоянная подачи', key: 'lead', unit: 'мм/об', step: 1, min: 0 },
 //    { label: 'Внешняя инерция', key: 'externalInertia', unit: 'кг⋅cм²', step: 0.01, min: 0 },
