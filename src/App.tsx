@@ -79,7 +79,7 @@ function App() {
             <h1 className={`text-4xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} border-left`}>
             
             
-              Drive Calculation Tool (beta v.0.94)
+              Drive Calculation Tool (beta v.0.95)
             </h1>
             
           </div>
