@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { MotionResults } from '../types';
 
-interface MotorGraphProps {
+interface MotionGraphProps {
   results: MotionResults;
   darkMode: boolean;
 }
 
-const MotorGraph: React.FC<MotorGraphProps> = ({ results, darkMode }) => {
+const MotionGraph: React.FC<MotionGraphProps> = ({ results, darkMode }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -27,33 +27,26 @@ const MotorGraph: React.FC<MotorGraphProps> = ({ results, darkMode }) => {
     ctx.fillStyle = darkMode ? '#1f2937' : '#ffffff';
     ctx.fillRect(0, 0, width, height);
 
-    // Motor values 
-    const maxTorque = results.M_max;
-    const maxRPM = results.N_max;
-    const ratedTorque = results.M_nom;
-    const ratedRPM = results.N_nom;
+    const totalTime = results.totalCycleTime;
+    const maxVelocity = results.maxVelocity;
+    //const maxPosition = results.stroke;
+    const maxPosition = Math.max(...results.torqueProfile.map(p => Math.abs(p.position)));
 
-    // Calculated values
-    const RMSTorque = results.meanTorque;
-    const MeanRPM = results.meanRPM;
-    const MAXTorque = results.maxTorque;
-    const MAXRPM = results.maxRPM;
-   
+    // Calculate scales
+    const scaleX = (width - 2 * padding) / totalTime;
+    const scaleYVelocity = (height - 2 * padding) / maxVelocity;
+    const scaleYPosition = (height - 2 * padding) / maxPosition;
 
-    const scaleX = (width - 2 * padding) / maxRPM;
-    const scaleYTorque = (height - 2 * padding) / (maxTorque);
-
-
-    // Draw axes and grid
+    // Draw axes
     ctx.beginPath();
     ctx.strokeStyle = darkMode ? '#4b5563' : '#94a3b8';
     ctx.lineWidth = 1;
     
     // X-axis (time)
-    ctx.moveTo(padding, height - padding );
+    ctx.moveTo(padding, height - padding);
     ctx.lineTo(width - padding, height - padding);
     
-    // Y-axis
+    // Y-axis (velocity/position)
     ctx.moveTo(padding, padding);
     ctx.lineTo(padding, height - padding);
     
@@ -63,99 +56,93 @@ const MotorGraph: React.FC<MotorGraphProps> = ({ results, darkMode }) => {
     ctx.font = '12px Arial';
     ctx.fillStyle = darkMode ? '#9ca3af' : '#64748b';
 
-
-    // Torque labels (left)
-    for (let t = 0; t <= maxTorque; t += maxTorque / 6) {
-        const y = height  - t * scaleYTorque - padding;
-        ctx.fillText(t.toFixed(1) + 'Н⋅м', 2, y + 4);
-        ctx.moveTo(padding,  y);
-        ctx.lineTo(width-padding ,  y);
+    // Time labels with pause time indication
+    const activeTime = totalTime - results.pauseTime;
+    for (let t = 0; t <= totalTime; t += totalTime / 5) {
+      const x = padding + t * scaleX;
+      ctx.fillText(t.toFixed(1) + 'с', x - 15, height - padding + 20);
+      if (t >= activeTime && t <= totalTime) {
+        ctx.fillStyle = darkMode ? '#374151' : '#e2e8f0';
+        ctx.fillRect(
+          padding + activeTime * scaleX,
+          padding,
+          (totalTime - activeTime) * scaleX,
+          height - 2 * padding
+        );
+        ctx.fillStyle = darkMode ? '#9ca3af' : '#64748b';
+      }
     }
 
-    // RPM labels (bottom)
-    for (let rpm = 0 ; rpm <= maxRPM; rpm += maxRPM / 6) {
-        const x = padding + rpm * scaleX;
-        ctx.fillText(rpm.toFixed(0) + ' об/мин', x - 20, height - padding + 20);
-        ctx.moveTo(x ,  height - padding);
-        ctx.lineTo(x ,  padding);
-        ctx.stroke();
+    // Velocity labels (left)
+    for (let v = 0; v <= maxVelocity; v += maxVelocity / 4) {
+      const y = height - padding - v * scaleYVelocity;
+      ctx.fillText(v.toFixed(0) + 'мм/с', 2, y + 4);
     }
 
+    // Position labels (right)
+    for (let p = 0; p <= maxPosition; p += maxPosition / 4) {
+      const y = height - padding - p * scaleYPosition;
+      ctx.fillText(p.toFixed(0) + 'мм', width - padding + 5, y + 4);
+    }
 
+    // Draw velocity profile
+    if (results.torqueProfile.length > 0) {
+      ctx.beginPath();
+      ctx.strokeStyle = '#6366f1';
+      ctx.lineWidth = 2;
 
-    // Draw peak torque profile
-    ctx.beginPath();
-    ctx.strokeStyle = '#f16366';
-    ctx.lineWidth = 3;
-    ctx.moveTo(0 + padding,  padding);
-    ctx.lineTo(ratedRPM * scaleX + padding,  padding);
-    ctx.stroke();
+      results.torqueProfile.forEach((point, i) => {
+        const x = padding + point.time * scaleX;
+        const y = height - padding - point.velocity * scaleYVelocity;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    }
 
-    ctx.beginPath();
-    ctx.strokeStyle = '#f16366';
-    ctx.lineWidth = 3;
-    ctx.moveTo(ratedRPM * scaleX + padding, padding);
-    ctx.lineTo(maxRPM * scaleX + padding, (maxTorque * scaleYTorque + padding));
-    ctx.stroke();
+    // Draw position profile
+    if (results.torqueProfile.length > 0) {
+      ctx.beginPath();
+      ctx.strokeStyle = '#22c55e';
+      ctx.lineWidth = 2;
 
-    // Draw rated torque profile
-    ctx.beginPath();
-    ctx.strokeStyle = '#66f163';
-    ctx.lineWidth = 3;
-    ctx.moveTo(0 + padding, height - (ratedTorque * scaleYTorque) - padding);
-    ctx.lineTo(ratedRPM * scaleX + padding, height - (ratedTorque * scaleYTorque) - padding);
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.strokeStyle = '#66f163';
-    ctx.lineWidth = 3;
-    ctx.moveTo(ratedRPM * scaleX + padding, height - (ratedTorque * scaleYTorque) - padding);
-    ctx.lineTo(maxRPM * scaleX + padding, height - padding);
-    ctx.stroke();
-
-    // Draw mean work point
-    ctx.beginPath();
-    ctx.fillStyle = '#66f163';
-    ctx.arc(MeanRPM * scaleX + padding,  height - (RMSTorque * scaleYTorque) - padding, 4, 0, 2 * Math.PI, false);
-    ctx.fill();
-
-    // Draw max work point
-    ctx.beginPath();
-    ctx.fillStyle = '#f16366';
-    ctx.arc(MAXRPM * scaleX + padding,  height - (MAXTorque * scaleYTorque) - padding, 4, 0, 2 * Math.PI, false);
-    ctx.fill();
-
-  
+      results.torqueProfile.forEach((point, i) => {
+        const x = padding + point.time * scaleX;
+        const y = height - padding - point.position * scaleYPosition;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    }
 
     // Add legend
     const legendY = padding - 30;
     ctx.font = '12px Arial';
     
-    // Draw legend 
+    // Velocity legend
     ctx.strokeStyle = '#6366f1';
     ctx.beginPath();
-    ctx.fillStyle = '#66f163';
-    ctx.arc(padding + 10, legendY, 4, 0, 2 * Math.PI, false);
-    ctx.fill();
-    ctx.fillStyle = '#66f163';
-    ctx.fillText('Среднеквадратичные значения', padding + 30, legendY + 4);
+    ctx.moveTo(padding + 10, legendY);
+    ctx.lineTo(padding + 40, legendY);
+    ctx.stroke();
+    ctx.fillStyle = '#6366f1';
+    ctx.fillText('Скорость [мм/с]', padding + 50, legendY + 4);
 
-    ctx.strokeStyle = '#6366f1';
+    // Position legend
+    ctx.strokeStyle = '#22c55e';
     ctx.beginPath();
-    ctx.fillStyle = '#f16366';
-    ctx.arc(padding + 300, legendY, 4, 0, 2 * Math.PI, false);
-    ctx.fill();
-    ctx.fillStyle = '#f16366';
-    ctx.fillText('Пиковые значения', padding + 320, legendY + 4);
-
-
+    ctx.moveTo(padding + 180, legendY);
+    ctx.lineTo(padding + 210, legendY);
+    ctx.stroke();
+    ctx.fillStyle = '#22c55e';
+    ctx.fillText('Перемещение [мм]', padding + 220, legendY + 4);
 
   }, [results, darkMode]);
 
   return (
     <div className={`p-6 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
       <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-        Механическая характеристика двигателя
+        Профиль перемещения
       </h3>
       <canvas
         ref={canvasRef}
@@ -167,4 +154,4 @@ const MotorGraph: React.FC<MotorGraphProps> = ({ results, darkMode }) => {
   );
 };
 
-export default MotorGraph;
+export default MotionGraph;
