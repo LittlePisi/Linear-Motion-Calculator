@@ -58,7 +58,7 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     useMaxSpeedMode,
     isVertical,
     externalForce,
-    idleTorque,
+    selectedMTSetName,
     M_idleTorque,
     M_zsInertia,
     M_pmInertia,
@@ -244,6 +244,8 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
 
     const M_loadRatio =  meanTorque / M_nom * 100;
 
+    const MotorName = selectedMTSetName;
+
 
     if (M_maxTorque <= (maxTorque * reductionRatio)) throw new Error('Превышение допустимого момента для привода. Выберите больший типоразмер привода или шаг винта.');
     if (G_maxTorque <= (maxTorque * reductionRatio)) throw new Error('Превышение допустимого момента для редуктора. Выберите больший типоразмер или другое передаточное число.');
@@ -259,6 +261,7 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     console.log({maxTorque});
 
     console.log("Motor parameters:");
+    console.log({MotorName});
     console.log({M_nom});
     console.log({M_max});
     console.log({N_nom});
@@ -289,6 +292,7 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     LM_loadRatio,
     GB_loadRatio,
     M_loadRatio,
+    MotorName,
     M_max,
     M_nom,
     N_max,
