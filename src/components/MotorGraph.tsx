@@ -83,7 +83,7 @@ const MotorGraph: React.FC<MotorGraphProps> = ({ results, darkMode }) => {
 
 
 
-    // Draw torque profile
+    // Draw peak torque profile
     ctx.beginPath();
     ctx.strokeStyle = '#f16366';
     ctx.lineWidth = 3;
@@ -98,7 +98,7 @@ const MotorGraph: React.FC<MotorGraphProps> = ({ results, darkMode }) => {
     ctx.lineTo(maxRPM * scaleX + padding, (maxTorque * scaleYTorque + padding));
     ctx.stroke();
 
-
+    // Draw rated torque profile
     ctx.beginPath();
     ctx.strokeStyle = '#66f163';
     ctx.lineWidth = 3;
@@ -113,12 +113,13 @@ const MotorGraph: React.FC<MotorGraphProps> = ({ results, darkMode }) => {
     ctx.lineTo(maxRPM * scaleX + padding, height - padding);
     ctx.stroke();
 
-
+    // Draw mean work point
     ctx.beginPath();
     ctx.fillStyle = '#66f163';
     ctx.arc(MeanRPM * scaleX + padding,  height - (RMSTorque * scaleYTorque) - padding, 4, 0, 2 * Math.PI, false);
     ctx.fill();
 
+    // Draw max work point
     ctx.beginPath();
     ctx.fillStyle = '#f16366';
     ctx.arc(MAXRPM * scaleX + padding,  height - (MAXTorque * scaleYTorque) - padding, 4, 0, 2 * Math.PI, false);
@@ -130,7 +131,7 @@ const MotorGraph: React.FC<MotorGraphProps> = ({ results, darkMode }) => {
     const legendY = padding - 30;
     ctx.font = '12px Arial';
     
-    // Torque legend
+    // Draw legend 
     ctx.strokeStyle = '#6366f1';
     ctx.beginPath();
     ctx.fillStyle = '#66f163';
