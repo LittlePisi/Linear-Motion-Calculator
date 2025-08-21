@@ -238,7 +238,7 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
 
 
  // Components load ratio
-    const LM_loadRatio = (meanTorque * reductionRatio) / M_maxTorque * 100;
+    const LM_loadRatio = (maxTorque * reductionRatio) / M_maxTorque * 100;
 
     const GB_loadRatio = (maxTorque * reductionRatio) / G_maxTorque * 100;
 
@@ -252,12 +252,17 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     if (N_nom <= (meanRPM)) throw new Error('Превышение номинальной скорости двигателя. Выберите редуктор с меньшим передаточным числом или измените другие параметры расчёта.');
 //    if (M_max <= (maxRPM)) throw new Error('Превышение максимальной скорости двигателя. Выберите редуктор с меньшим передаточным числом или измените другие параметры расчёта.');
 
-    
+    console.log("Calculated parameters:");
     console.log({meanRPM});
     console.log({maxRPM});
     console.log({meanTorque});
     console.log({maxTorque});
 
+    console.log("Motor parameters:");
+    console.log({M_nom});
+    console.log({M_max});
+    console.log({N_nom});
+    console.log({N_max});
 
 
   return {
@@ -284,6 +289,10 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     LM_loadRatio,
     GB_loadRatio,
     M_loadRatio,
+    M_max,
+    M_nom,
+    N_max,
+    N_nom,
 //    constantLoadTorque,
 //   loadInertia,
 //    angAcceleration,
