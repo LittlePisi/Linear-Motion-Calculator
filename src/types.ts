@@ -60,6 +60,11 @@ export interface MotionResults {
   LM_loadRatio: number;
   GB_loadRatio: number;
   M_loadRatio: number;
+  MotorName: number;
+  M_nom: number;
+  N_nom: number;
+  M_max: number;
+  N_max: number;
 //  constantLoadTorque: number;
 //  loadInertia: number;
 //  angAcceleration: number;
