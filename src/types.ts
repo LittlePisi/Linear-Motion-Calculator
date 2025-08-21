@@ -60,7 +60,7 @@ export interface MotionResults {
   LM_loadRatio: number;
   GB_loadRatio: number;
   M_loadRatio: number;
-  MotorName: number;
+  MotorName: string;
   M_nom: number;
   N_nom: number;
   M_max: number;
