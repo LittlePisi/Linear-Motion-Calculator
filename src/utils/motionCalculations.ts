@@ -59,6 +59,8 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     isVertical,
     externalForce,
     selectedMTSetName,
+    selectedLMSetName,
+    selectedGBSetName,
     M_idleTorque,
     M_zsInertia,
     M_pmInertia,
@@ -133,8 +135,6 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
   let maxTorque = 0;
   let maxRPM = 0;
   let currentPosition = 0;
-
-
   
   // Convert lead from mm/rev to m/rev
   const leadInMeters = lead / 1000;
@@ -144,11 +144,10 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
   // Linear module full inertia
 
   const Mod_fullInertia = M_zsInertia + (M_pmInertia * stroke/1000);
-  console.log({Mod_fullInertia});
+  
 
   // Calculate load inertia referred to motor shaft
   const loadInertia = (mass * Math.pow(leadInMeters / (2 * Math.PI), 2) + externalInertiaScaled + Mod_fullInertia + G_Inertia);
-  console.log({loadInertia});
 
   // Calculate inertia ratio
   const inertiaRatio = 1 + ((loadInertia / Math.pow(reductionRatio, 2)) / motorRotorInertiaScaled);
@@ -159,30 +158,28 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
 
   // Scale idle torque according to reduction ratio
   const scaledIdleTorque = (M_idleTorque);
-  console.log({scaledIdleTorque});
 
   // Calculate constant torques
   const gravityTorque = isVertical ? (mass * GRAVITY * leadInMeters) / (2 * Math.PI ) : 0;
-  console.log({gravityTorque});
+  
   const externalTorque = ((externalForce * ((leadInMeters) / (2 * Math.PI))) );
-  console.log({externalTorque});
+  
   const constantLoadTorque = gravityTorque + externalTorque + scaledIdleTorque;
-  console.log({constantLoadTorque});
+  
 
   // Calculate dynamic torques for each phase
-  //const angAcceleration =((Math.PI * mrpm)/(30 * t1));
   const dynamicTorqueA = (loadInertia + motorRotorInertiaScaled) * ((Math.PI * mrpm)/(30 * t1));
-  console.log({dynamicTorqueA});
+  
   const dynamicTorqueD = (loadInertia + motorRotorInertiaScaled) * ((Math.PI * mrpm)/(30 * t3));
-  console.log({dynamicTorqueD});
+  
 
   // Calculate total torques for each phase
   const accelerationTorque = (((dynamicTorqueA + constantLoadTorque) / reductionRatio) / G_eff) + G_idleTorque;
-  console.log({accelerationTorque});
+  
   const constantVelocityTorque = (((constantLoadTorque) / reductionRatio) / G_eff) + G_idleTorque;
-  console.log({constantVelocityTorque});
+  
   const decelerationTorque = (((dynamicTorqueD - constantLoadTorque) / reductionRatio) / G_eff) + G_idleTorque;
-  console.log({decelerationTorque});
+  
 
   for (let i = 0; i <= totalPoints; i++) {
     const time = i * timeStep;
@@ -214,30 +211,23 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
       position: currentPosition * 1000, // Convert back to mm
       velocity: velocity * 1000 // Convert back to mm/s
     });
-
-    //console.log(torqueProfile);
     
-
     sumTorque += Math.abs(torque);
-//    sumTorque += Math.max( Math.abs(accelerationTorque) , Math.abs(decelerationTorque) )
-//    sumRPM += Math.abs(rpm);
     maxTorque = Math.max(maxTorque, Math.abs(torque));
-//    maxTorque = Math.max( Math.abs(accelerationTorque) , Math.abs(decelerationTorque) );
     maxRPM = Math.max(maxRPM, Math.abs(rpm));
   }
 
-//  const meanTorque = sumTorque / torqueProfile.length;
+  // Calculating mean torque
   const meanTorque = isVertical
     ? Math.sqrt( ((Math.pow(accelerationTorque, 2) * t1) + (Math.pow(constantVelocityTorque, 2) * t2) + (Math.pow(decelerationTorque, 2) * t3)) / totalTime) 
     : Math.sqrt( ((Math.pow(accelerationTorque, 2) * t1) + (Math.pow(constantVelocityTorque, 2) * t2) + (Math.pow(decelerationTorque, 2) * t3)) / totalTime);
   
- // const meanRPM = sumRPM / torqueProfile.length;
     const meanRPM = (2 * maxRPM) / 3;
 
     const calcValue = M_nom;
 
 
- // Components load ratio
+  // Components load ratio
     const LM_loadRatio = (maxTorque * reductionRatio) / M_maxTorque * 100;
 
     const GB_loadRatio = (maxTorque * reductionRatio) / G_maxTorque * 100;
@@ -246,7 +236,7 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
 
     const MotorName = selectedMTSetName;
 
-
+  // Overload/overspeed error handling 
     if (M_maxTorque <= (maxTorque * reductionRatio)) throw new Error('Превышение допустимого момента для привода. Выберите больший типоразмер привода или шаг винта.');
     if (G_maxTorque <= (maxTorque * reductionRatio)) throw new Error('Превышение допустимого момента для редуктора. Выберите больший типоразмер или другое передаточное число.');
     if (M_max <= (maxTorque)) throw new Error('Превышение максимального момента двигателя. Выберите больший типоразмер или измените другие параметры расчёта.');
@@ -254,18 +244,38 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     if (N_nom <= (meanRPM)) throw new Error('Превышение номинальной скорости двигателя. Выберите редуктор с меньшим передаточным числом или измените другие параметры расчёта.');
     if (N_max <= (maxRPM)) throw new Error('Превышение максимальной скорости двигателя. Выберите редуктор с меньшим передаточным числом или измените другие параметры расчёта.');
 
-    console.log("Calculated parameters:");
-    console.log({meanRPM});
-    console.log({maxRPM});
-    console.log({meanTorque});
-    console.log({maxTorque});
-
+  // Console result output
+  
     console.log("Motor parameters:");
     console.log({MotorName});
     console.log({M_nom});
     console.log({M_max});
     console.log({N_nom});
     console.log({N_max});
+
+    console.log("Linear module parameters:");
+    console.log({selectedLMSetName});
+    console.log({lead});
+    console.log({M_idleTorque});
+    console.log({M_maxTorque});
+    console.log({Mod_fullInertia});
+
+    console.log("Motor parameters:");
+    console.log({selectedGBSetName});
+    console.log({reductionRatio});
+    console.log({G_idleTorque});
+    console.log({G_maxTorque});
+    console.log({G_eff});
+    console.log({G_Inertia});
+
+    console.log("Calculated parameters:");
+    console.log({accelerationTorque});
+    console.log({constantVelocityTorque});
+    console.log({decelerationTorque});
+    console.log({meanRPM});
+    console.log({maxRPM});
+    console.log({meanTorque});
+    console.log({maxTorque});
 
 
   return {
@@ -297,11 +307,6 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     M_nom,
     N_max,
     N_nom,
-//    constantLoadTorque,
-//   loadInertia,
-//    angAcceleration,
-//    mrpm,
-//   v1
 
   };
 }
