@@ -8,6 +8,9 @@ export interface ParameterSet {
   M_zsInertia: string;
   M_pmInertia: string;
   M_maxTorque: string;
+  ScrewDLR: string;
+  Screw_dr: string;
+  Screw_la: string;
 }
 
 interface LMComboBoxProps {
@@ -45,6 +48,9 @@ const LMComboBox: React.FC<LMComboBoxProps> = ({
               M_zsInertia: row.getCell(4).text,
               M_pmInertia: row.getCell(5).text,
               M_maxTorque: row.getCell(6).text,
+              ScrewDLR: row.getCell(7).text,
+              Screw_dr: row.getCell(8).text,
+              Screw_la: row.getCell(9).text,
             });
           }
         });
