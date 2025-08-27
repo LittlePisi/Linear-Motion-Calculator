@@ -8,6 +8,10 @@ export interface MTParameterSet {
   M_max: string;
   N_max: string;
   motorRotorInertia: string;
+  M_torqueConstant: string;
+  M_fp: string;
+  N_fp: string;
+  N_d: string;
 }
 
 interface MTComboBoxProps {
@@ -44,6 +48,10 @@ const MTComboBox: React.FC<MTComboBoxProps> = ({
               M_max: row.getCell(4).text,
               N_max: row.getCell(5).text,
               motorRotorInertia: row.getCell(6).text,
+              M_torqueConstant: row.getCell(7).text,
+              M_fp: row.getCell(8).text, 
+              N_fp: row.getCell(9).text,
+              N_d: row.getCell(10).text,
             });
           }
         });
