@@ -65,6 +65,9 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     M_zsInertia,
     M_pmInertia,
     M_maxTorque,
+    ScrewDLR,
+    Screw_dr,
+    Screw_la,
     G_idleTorque,
     G_Inertia,
     G_eff,
@@ -73,6 +76,10 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     N_max,
     M_nom,
     N_nom,
+    M_torqueConstant,
+    M_fp,
+    N_fp,
+    N_d,
   } = params;
 
   // Validation
@@ -227,22 +234,87 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     const calcValue = M_nom;
 
 
+  // Feed force calculation
+    const acc_scd = acceleration / 1000;
+    const dec_scd = deceleration / 1000;
+
+    const Fa = isVertical
+    ? (mass * acc_scd) + externalForce + (0.002 * mass * GRAVITY)+(mass * GRAVITY) 
+    : (mass * acc_scd) + externalForce + (0.002 * mass * GRAVITY);
+
+    const Fcv = Fa - (mass * acc_scd);
+
+    const Fd = isVertical
+    ? (mass * dec_scd) + externalForce + (0.002 * mass * GRAVITY) - (mass * GRAVITY) 
+    : (mass * dec_scd) + externalForce + (0.002 * mass * GRAVITY);
+
+    const Fxm = Math.pow( ((Math.pow(Fa, 3) * (t1 / totalTime))) + ((Math.pow(Fcv, 3) * (t2 / totalTime))) + ((Math.pow(Fd, 3) * (t3 / totalTime))) , 1/3 );
+
+    const Fmax = Math.max(Fa, Fd);
+    
+    const M_Fmax = M_maxTorque / ( (leadInMeters) / ( 2 * 3.14 ) );
+
+  // Screw life calculation
+    const fw = 1;
+
+    let Lr : number;
+
+    let Ld : number;
+
+    if (ScrewDLR > 0){
+      Lr = ( Math.pow((ScrewDLR / (Fxm * fw) ), 3)) * Math.pow(10, 6);
+      Ld = (Lr * lead) / Math.pow(10, 6);
+    } else {
+      Lr = 0;
+      Ld = 0;
+    }
+
   // Components load ratio
-    const LM_loadRatio = (maxTorque * reductionRatio) / M_maxTorque * 100;
+   const LM_loadRatio = Fmax / M_Fmax * 100;
 
-    const GB_loadRatio = (maxTorque * reductionRatio) / G_maxTorque * 100;
+   const GB_loadRatio = (maxTorque * reductionRatio) / G_maxTorque * 100;
 
-    const M_loadRatio =  meanTorque / M_nom * 100;
+   const M_loadRatio =  meanTorque / M_nom * 100;
 
-    const MotorName = selectedMTSetName;
+   const MotorName = selectedMTSetName;
+    
+  
+  // Screw critical speed and force calculation
+    let LMCcheck = selectedLMSetName.indexOf("LMC");
+    let Mf : number;
+    let Nc : number;
+    let Np : number;
+    let Fk : number;
+    let Fp : number;
 
-  // Overload/overspeed error handling 
-    if (M_maxTorque <= (maxTorque * reductionRatio)) throw new Error('Превышение допустимого момента для привода. Выберите больший типоразмер привода или шаг винта.');
-    if (G_maxTorque <= (maxTorque * reductionRatio)) throw new Error('Превышение допустимого момента для редуктора. Выберите больший типоразмер или другое передаточное число.');
-    if (M_max <= (maxTorque)) throw new Error('Превышение максимального момента двигателя. Выберите больший типоразмер или измените другие параметры расчёта.');
-    if (M_nom <= (meanTorque)) throw new Error('Превышение номинального момента двигателя. Выберите больший типоразмер или измените другие параметры расчёта.');
-    if (N_nom <= (meanRPM)) throw new Error('Превышение номинальной скорости двигателя. Выберите редуктор с меньшим передаточным числом или измените другие параметры расчёта.');
-    if (N_max <= (maxRPM)) throw new Error('Превышение максимальной скорости двигателя. Выберите редуктор с меньшим передаточным числом или измените другие параметры расчёта.');
+    if (LMCcheck >= 0) {
+      Mf = 0.45;          // Speed factor for LMC 
+    } else {
+      Mf = 0.689;         // Speed factor for fixed-supported screw
+    }
+
+    const Nf = 0.5;       // Force factor for fixed-supported screw
+  
+    const Lt = stroke + Screw_la;
+
+    if (ScrewDLR > 0){
+      Nc = 2.71 * Math.pow(10, 8) * ((Mf * Screw_dr) / (Math.pow(Lt, 2)));
+      Np = Nc * 0.8;
+
+      Fk = 40720 * ((Nf * Math.pow(Screw_dr, 4)) / Math.pow(Lt, 2) );
+      Fp = Fk * 0.5;
+    } else {
+      Nc = 0;
+      Np = 0;
+      Fk = 0;
+      Fp = 0;
+    }
+
+  // Calculating motor current
+  
+  const rmsCurrent : number = meanTorque / M_torqueConstant;
+  const maxCurrent : number = maxTorque / M_torqueConstant;
+
 
   // Console result output
   
@@ -252,6 +324,8 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     console.log({M_max});
     console.log({N_nom});
     console.log({N_max});
+    console.log({motorRotorInertia});
+    console.log({M_torqueConstant});
 
     console.log("Linear module parameters:");
     console.log({selectedLMSetName});
@@ -259,6 +333,8 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     console.log({M_idleTorque});
     console.log({M_maxTorque});
     console.log({Mod_fullInertia});
+    console.log({ScrewDLR});
+    console.log({Mf});
 
     console.log("Motor parameters:");
     console.log({selectedGBSetName});
@@ -276,6 +352,22 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     console.log({maxRPM});
     console.log({meanTorque});
     console.log({maxTorque});
+    console.log({Fxm});
+    console.log({Fmax});
+    console.log({Np});
+    console.log({Fp});
+    console.log({rmsCurrent});
+    console.log({maxCurrent});
+
+  // Overload/overspeed error handling 
+    if (M_Fmax <= Fmax) throw new Error('Превышение допустимого усилия подачи для привода. Выберите больший типоразмер привода или шаг винта.');
+    if (ScrewDLR > 0 && Np <= (maxRPM / reductionRatio)) throw new Error ('Превышение критической частоты вращения винта. Выберите больший типоразмер привода или больший шаг винта.')
+    if (ScrewDLR > 0 && Fp <= Fmax) throw new Error ('Превышение безопасного усилия подачи для выбранной величины хода. Выберите больший типоразмер привода.')
+    if (G_maxTorque <= (maxTorque * reductionRatio)) throw new Error('Превышение допустимого момента для редуктора. Выберите больший типоразмер или другое передаточное число.');
+    if (M_max <= (maxTorque)) throw new Error('Превышение максимального момента двигателя. Выберите больший типоразмер или измените другие параметры расчёта.');
+    if (M_nom <= (meanTorque)) throw new Error('Превышение номинального момента двигателя. Выберите больший типоразмер или измените другие параметры расчёта.');
+    if (N_nom <= (meanRPM)) throw new Error('Превышение номинальной скорости двигателя. Выберите редуктор с меньшим передаточным числом или измените другие параметры расчёта.');
+    if (N_max <= (maxRPM)) throw new Error('Превышение максимальной скорости двигателя. Выберите редуктор с меньшим передаточным числом или измените другие параметры расчёта.');
 
 
   return {
@@ -307,6 +399,12 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     M_nom,
     N_max,
     N_nom,
+    M_fp,
+    N_fp,
+    N_d,
+    Ld,
+    rmsCurrent,
+    maxCurrent,
 
   };
 }
