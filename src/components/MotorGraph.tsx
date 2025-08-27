@@ -88,13 +88,13 @@ const MotorGraph: React.FC<MotorGraphProps> = ({ results, darkMode }) => {
     ctx.strokeStyle = '#f16366';
     ctx.lineWidth = 3;
     ctx.moveTo(0 + padding,  padding);
-    ctx.lineTo(ratedRPM * scaleX + padding,  padding);
+    ctx.lineTo(results.N_d * scaleX + padding,  padding);
     ctx.stroke();
 
     ctx.beginPath();
     ctx.strokeStyle = '#f16366';
     ctx.lineWidth = 3;
-    ctx.moveTo(ratedRPM * scaleX + padding, padding);
+    ctx.moveTo(results.N_d * scaleX + padding, padding);
     ctx.lineTo(maxRPM * scaleX + padding, (maxTorque * scaleYTorque + padding));
     ctx.stroke();
 
@@ -110,7 +110,7 @@ const MotorGraph: React.FC<MotorGraphProps> = ({ results, darkMode }) => {
     ctx.strokeStyle = '#66f163';
     ctx.lineWidth = 3;
     ctx.moveTo(ratedRPM * scaleX + padding, height - (ratedTorque * scaleYTorque) - padding);
-    ctx.lineTo(maxRPM * scaleX + padding, height - padding);
+    ctx.lineTo(results.N_fp * scaleX + padding, height - (results.M_fp * scaleYTorque) - padding);
     ctx.stroke();
 
     // Draw mean work point
