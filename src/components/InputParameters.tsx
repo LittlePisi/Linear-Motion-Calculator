@@ -40,6 +40,9 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
       M_zsInertia: toNum(sel.M_zsInertia),
       M_pmInertia: toNum(sel.M_pmInertia),
       M_maxTorque: toNum(sel.M_maxTorque),
+      ScrewDLR: toNum(sel.ScrewDLR),
+      Screw_dr: toNum(sel.Screw_dr),
+      Screw_la: toNum(sel.Screw_la),
     }));
   };
 
@@ -75,6 +78,10 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
       M_max: toNum(sel.M_max),
       N_max: toNum(sel.N_max),
       motorRotorInertia: toNum(sel.motorRotorInertia),
+      M_torqueConstant: toNum(sel.M_torqueConstant),
+      M_fp: toNum(sel.M_fp),
+      N_fp: toNum(sel.N_fp),
+      N_d: toNum(sel.N_d),
     }));
   };
 
@@ -106,7 +113,7 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
     <div className={`rounded-xl shadow-lg p-4 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
       <div className="flex flex-col gap-4 mb-4">
         <div className="flex items-center justify-between">
-          <h2 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+          <h2 className={`text-xl pb-2 font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
             Ввод параметров
           </h2>
         </div>
