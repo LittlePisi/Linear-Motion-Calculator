@@ -35,6 +35,9 @@ function App() {
     M_zsInertia: 1,
     M_pmInertia: 1,
     M_maxTorque: "10",
+    ScrewDLR: 4000,
+    Screw_dr: 12,
+    Screw_la: 100,
     G_idleTorque: 1,
     G_Inertia: 1,
     G_eff: 1,
@@ -43,6 +46,10 @@ function App() {
     N_nom: 2000,
     M_max: 1,
     N_max: 3000,
+    M_torqueConstant: 1,
+    M_fp: 1,
+    N_fp: 1,
+    N_d: 1,
     selectedLMSetName: "",
     selectedGBSetName: "",
     selectedMTSetName: "",
@@ -79,7 +86,7 @@ function App() {
             <h1 className={`text-4xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} border-left`}>
             
             
-              Drive Calculation Tool (beta v.0.95)
+              Drive Calculation Tool (beta v.0.96)
             </h1>
             
           </div>
