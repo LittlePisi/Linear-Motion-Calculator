@@ -23,6 +23,9 @@ export interface MotionParameters {
   M_zsInertia: number;
   M_pmInertia: number;
   M_maxTorque: number;
+  ScrewDLR: number;
+  Screw_dr: number;
+  Screw_la: number;
   G_idleTorque: number;
   G_Inertia: number;
   G_eff: number;
@@ -34,6 +37,10 @@ export interface MotionParameters {
   N_nom: number;
   M_max: number;
   N_max: number;
+  M_torqueConstant: number;
+  M_fp: number;
+  N_fp: number;
+  N_d: number;
 }
 
 export interface MotionResults {
@@ -60,11 +67,17 @@ export interface MotionResults {
   LM_loadRatio: number;
   GB_loadRatio: number;
   M_loadRatio: number;
+  Ld : number;
   MotorName: string;
   M_nom: number;
   N_nom: number;
   M_max: number;
   N_max: number;
+  rmsCurrent: number;
+  maxCurrent: number;
+  M_fp: number;
+  N_fp: number;
+  N_d: number;
 //  constantLoadTorque: number;
 //  loadInertia: number;
 //  angAcceleration: number;
