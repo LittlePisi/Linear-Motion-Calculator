@@ -84,11 +84,11 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
 
   // Validation
   if (stroke <= 0) throw new Error('Ход должен быть больше 0');
-  if (!useMaxSpeedMode && travelTime <= 0) throw new Error('Время перемещения должно быть больше 0');
+  if (!useMaxSpeedMode && travelTime < 0) throw new Error('Время перемещения должно быть больше 0');
   if (!useMaxSpeedMode && acceleration <= 0) throw new Error('Ускорение должно быть больше 0');
   if (!useMaxSpeedMode && deceleration <= 0) throw new Error('Замедление должно быть больше 0');
   if (useMaxSpeedMode && (!maxSpeed || maxSpeed <= 0)) throw new Error('Макс. скорость должна быть больше 0');
-  if (mass <= 0) throw new Error('Перемещаемая масса должна быть больше 0');
+  if (mass < 0) throw new Error('Перемещаемая масса должна быть больше 0');
   if (lead <= 0) throw new Error('Постоянная подачи должна быть больше 0');
   if (externalInertia < 0) throw new Error('Внешняя инерционная нагрузка не должна быть отрицательной');
   if (reductionRatio <= 0) throw new Error('Передаточное число должно быть больше 0');
@@ -359,12 +359,20 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     console.log({rmsCurrent});
     console.log({maxCurrent});
 
+  // Calculating max allowable motor torque at slope
+    const k = (M_max - 0) / (N_max - N_d);
+    console.log({k});
+    const a = (0 + k * N_max) / M_max;
+    console.log({a});
+    const M_slope = maxRPM > N_d ? (a * M_max - k * maxRPM) : M_max; 
+    console.log({M_slope});
+
   // Overload/overspeed error handling 
     if (M_Fmax <= Fmax) throw new Error('Превышение допустимого усилия подачи для привода. Выберите больший типоразмер привода или шаг винта.');
     if (ScrewDLR > 0 && Np <= (maxRPM / reductionRatio)) throw new Error ('Превышение критической частоты вращения винта. Выберите больший типоразмер привода или больший шаг винта.')
     if (ScrewDLR > 0 && Fp <= Fmax) throw new Error ('Превышение безопасного усилия подачи для выбранной величины хода. Выберите больший типоразмер привода.')
     if (G_maxTorque <= (maxTorque * reductionRatio)) throw new Error('Превышение допустимого момента для редуктора. Выберите больший типоразмер или другое передаточное число.');
-    if (M_max <= (maxTorque)) throw new Error('Превышение максимального момента двигателя. Выберите больший типоразмер или измените другие параметры расчёта.');
+    if (M_slope <= (maxTorque)) throw new Error('Превышение максимального момента двигателя. Выберите больший типоразмер или измените другие параметры расчёта.');
     if (M_nom <= (meanTorque)) throw new Error('Превышение номинального момента двигателя. Выберите больший типоразмер или измените другие параметры расчёта.');
     if (N_nom <= (meanRPM)) throw new Error('Превышение номинальной скорости двигателя. Выберите редуктор с меньшим передаточным числом или измените другие параметры расчёта.');
     if (N_max <= (maxRPM)) throw new Error('Превышение максимальной скорости двигателя. Выберите редуктор с меньшим передаточным числом или измените другие параметры расчёта.');
