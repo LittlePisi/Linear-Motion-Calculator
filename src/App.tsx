@@ -6,21 +6,23 @@ import { calculateMotionParameters } from './utils/motionCalculations';
 import { MotionParameters, MotionResults } from './types';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import mainLogo from '../logo.svg';
+import {Moon, Sun} from 'lucide-react';
+
 
 
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [params, setParams] = useLocalStorage<MotionParameters>('motionCalculatorParams', {
     stroke: 1000,
     travelTime: 2,
     acceleration: 2000,
     deceleration: 2000,
     mass: 10,
-    lead: 99,
+    lead: 176,
     externalInertia: 0.0001,
     reductionRatio: 1,
-    motorRotorInertia: 0.06,
+    motorRotorInertia: 0.003,
     pauseTime: 0.3,
     maxSpeed: 500,
     useMaxSpeedMode: false,
@@ -31,25 +33,25 @@ function App() {
     showPosition: true,
     externalForce: 0,
     //idleTorque: 0.5,
-    M_idleTorque: 0.1,
-    M_zsInertia: 0.00009256,
-    M_pmInertia: 0.00000946,
-    M_maxTorque: "6",
-    ScrewDLR: 0,
-    Screw_dr: 0,
-    Screw_la: 0,
-    G_idleTorque: 0,
-    G_Inertia: 0,
+    M_idleTorque: 1,
+    M_zsInertia: 1,
+    M_pmInertia: 1,
+    M_maxTorque: "10",
+    ScrewDLR: 4000,
+    Screw_dr: 12,
+    Screw_la: 100,
+    G_idleTorque: 1,
+    G_Inertia: 1,
     G_eff: 1,
-    G_maxTorque: 999999,
-    M_nom: 0.32,
-    N_nom: 3000,
-    M_max: 0.96,
-    N_max: 6000,
-    M_torqueConstant: 0.3,
-    M_fp: 0.16,
-    N_fp: 5500,
-    N_d: 3000,
+    G_maxTorque: 10,
+    M_nom: 1,
+    N_nom: 2000,
+    M_max: 1,
+    N_max: 3000,
+    M_torqueConstant: 1,
+    M_fp: 1,
+    N_fp: 1,
+    N_d: 1,
     selectedLMSetName: "",
     selectedGBSetName: "",
     selectedMTSetName: "",
@@ -93,10 +95,10 @@ function App() {
 
 
 
-          {/*
           
+          {/* 
           <button
-            onClick={() => alert("ParameterSet")}
+            onClick={() => alert(cycleTest())}
             className={`mt-4 px-4 py-2 rounded-lg transition-colors ${
               darkMode 
                 ? 'bg-gray-700 text-white hover:bg-gray-600' 
@@ -104,8 +106,9 @@ function App() {
             }`}>
             "Тестовая кнопка"
           </button>
-          
           */}
+          
+          
 
           
           <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} max-w-2xl mx-auto`}>
@@ -113,13 +116,14 @@ function App() {
           </p>
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className={`mt-4 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex items-center mx-auto mt-4 px-4 py-2 rounded-lg transition-colors ${
               darkMode 
                 ? 'bg-gray-700 text-white hover:bg-gray-600' 
-                : 'bg-white text-gray-800 hover:bg-gray-100'
+                : 'bg-white text-gray-800 hover:bg-gray-100 shadow-md shadow-gray-500'
             }`}
           >
-            {darkMode ? 'Светлое оформление' : 'Темное оформление'}
+            {darkMode ? <Sun className="w-30 h-5 mx-1" /> : <Moon className="w-30 h-5 mx-1" />}
+            <span className="hidden sm:inline">{darkMode ? 'Светлое оформление' : 'Темное оформление'}</span>
           </button>
         </header>
 
