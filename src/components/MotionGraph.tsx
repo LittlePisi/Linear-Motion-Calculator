@@ -88,7 +88,7 @@ const MotionGraph: React.FC<MotionGraphProps> = ({ results, darkMode }) => {
     // Draw velocity profile
     if (results.torqueProfile.length > 0) {
       ctx.beginPath();
-      ctx.strokeStyle = '#6366f1';
+      ctx.strokeStyle = '#00adef';
       ctx.lineWidth = 2;
 
       results.torqueProfile.forEach((point, i) => {
