@@ -68,7 +68,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
 
         <div className="grid grid-cols-3 gap-4">
 
-          <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} ${results.LM_loadRatio > 90 ? darkMode ? 'bg-red-900' : 'bg-red-50' : ''}`}>
+          <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} ${results.LM_loadRatio > 90 ? darkMode ? 'bg-red-900' : 'bg-red-300' : ''}`}>
             <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Загрузка привода</p>
             <p className={`text-lg font-semibold ${results.LM_loadRatio > 90 ? 'text-red-600' : darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
               {results.LM_loadRatio.toFixed(0)} %
@@ -81,7 +81,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
           </div>
           
           {results.GB_loadRatio > 0.001 && (
-            <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} ${results.GB_loadRatio > 90 ? darkMode ? 'bg-red-900' : 'bg-red-50' : ''}`}>
+            <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} ${results.GB_loadRatio > 90 ? darkMode ? 'bg-red-900' : 'bg-red-300' : ''}`}>
               <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Загрузка редуктора</p>
               <p className={`text-lg font-semibold ${results.GB_loadRatio > 90 ? 'text-red-600' : darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
                 {results.GB_loadRatio.toFixed(0)} %
@@ -94,7 +94,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
             </div>
           )}
 
-          <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} ${results.M_loadRatio > 90 ? darkMode ? 'bg-red-900' : 'bg-red-50' : ''}`}>
+          <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} ${results.M_loadRatio > 90 ? darkMode ? 'bg-red-900' : 'bg-red-300' : ''}`}>
             <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Загрузка двигателя</p>
             <p className={`text-lg font-semibold ${results.M_loadRatio > 90 ? 'text-red-600' : darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
               {results.M_loadRatio.toFixed(0)} %
@@ -107,7 +107,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
           </div>
           
           {results.Ld ? 
-          <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} ${results.Ld <= 200 ? darkMode ? 'bg-red-900' : 'bg-red-50' : ''}`}>
+          <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} ${results.Ld <= 200 ? darkMode ? 'bg-red-900' : 'bg-red-300' : ''}`}>
             <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Ресурс ШВП</p>
             <p className={`text-lg font-semibold ${results.Ld <= 200 ? 'text-red-600' : darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
               {results.Ld <= 10000 && (results.Ld.toFixed(2))} 
@@ -123,7 +123,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
           : ""}
 
           
-          <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} ${results.inertiaRatio > 15 ? darkMode ? 'bg-red-900' : 'bg-red-50' : ''}`}>
+          <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} ${results.inertiaRatio > 15 ? darkMode ? 'bg-red-900' : 'bg-red-300' : ''}`}>
             <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Соотношение моментов инерции</p>
             
             <p className={`text-lg font-semibold ${results.inertiaRatio > 15 ? 'text-red-600' : darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
@@ -144,7 +144,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
         </h3>
         <div className="grid grid-cols-3 gap-4">
           {resultItems.map(({ label, value, unit }) => (
-            <div key={label} className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+            <div key={label} className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
               <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{label}</p>
               <p className={`text-lg font-semibold ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
                 {value} {unit}
