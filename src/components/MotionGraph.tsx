@@ -120,21 +120,21 @@ const MotionGraph: React.FC<MotionGraphProps> = ({ results, darkMode }) => {
     ctx.font = '12px Arial';
     
     // Velocity legend
-    ctx.strokeStyle = '#6366f1';
+    ctx.strokeStyle = '#00adef';
     ctx.beginPath();
     ctx.moveTo(padding + 10, legendY);
     ctx.lineTo(padding + 40, legendY);
     ctx.stroke();
-    ctx.fillStyle = '#6366f1';
+    ctx.fillStyle = '#00adef';
     ctx.fillText('Скорость [мм/с]', padding + 50, legendY + 4);
 
     // Position legend
-    ctx.strokeStyle = '#22c55e';
+    ctx.strokeStyle = '#f16366';
     ctx.beginPath();
     ctx.moveTo(padding + 180, legendY);
     ctx.lineTo(padding + 210, legendY);
     ctx.stroke();
-    ctx.fillStyle = '#22c55e';
+    ctx.fillStyle = '#f16366';
     ctx.fillText('Перемещение [мм]', padding + 220, legendY + 4);
 
   }, [results, darkMode]);
