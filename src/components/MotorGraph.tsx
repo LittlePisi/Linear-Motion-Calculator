@@ -134,10 +134,10 @@ const MotorGraph: React.FC<MotorGraphProps> = ({ results, darkMode }) => {
     // Draw legend 
     ctx.strokeStyle = '#6366f1';
     ctx.beginPath();
-    ctx.fillStyle = '#66f163';
+    ctx.fillStyle = '#00adef';
     ctx.arc(padding + 10, legendY, 4, 0, 2 * Math.PI, false);
     ctx.fill();
-    ctx.fillStyle = '#66f163';
+    ctx.fillStyle = '#00adef';
     ctx.fillText('Среднеквадратичные значения', padding + 30, legendY + 4);
 
     ctx.strokeStyle = '#6366f1';
@@ -168,4 +168,5 @@ const MotorGraph: React.FC<MotorGraphProps> = ({ results, darkMode }) => {
 };
 
 export default MotorGraph;
+
 
