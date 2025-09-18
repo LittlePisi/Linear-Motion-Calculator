@@ -122,7 +122,7 @@ function App() {
                 : 'bg-white text-gray-800 hover:bg-gray-100 shadow-md shadow-gray-500'
             }`}
           >
-            {darkMode ? <Sun className="w-30 h-5 mx-1" /> : <Moon className="w-30 h-5 mx-1" />}
+            {darkMode ? <Sun className="w-30 h-5 mx-1 text-yellow-400" /> : <Moon className="w-30 h-5 mx-1 text-gray-500" />}
             <span className="hidden sm:inline">{darkMode ? 'Светлое оформление' : 'Темное оформление'}</span>
           </button>
         </header>
