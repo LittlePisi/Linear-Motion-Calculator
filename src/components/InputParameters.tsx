@@ -121,11 +121,11 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
 
       <div className="space-y-3">
         <div className="flex gap-2 items-center ">
-          <label className={`text-sm w-1/3 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Ориентация</label>
+          <label className={`text-sm w-1/3 ${darkMode ? 'text-gray-300  border-gray-600' : 'text-gray-700  border-gray-300'}`}>Ориентация</label>
           <button
             onClick={() => setParams(prev => ({ ...prev, isVertical: !prev.isVertical }))}
             className={`flex items-center gap-1 w-2/3 px-3 py-1.5 rounded-lg transition-colors ${
-              darkMode ? 'bg-gray-700 text-gray-200 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              darkMode ? 'bg-gray-700 text-gray-200 border border-gray-600 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200'
             }`}
             title={params.isVertical ? 'Vertical Application' : 'Horizontal Application'}
           >
@@ -139,7 +139,7 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
           <button
             onClick={() => setParams(prev => ({ ...prev, useMaxSpeedMode: !prev.useMaxSpeedMode }))}
             className={`flex items-center w-2/3 gap-1 px-3 py-1.5 rounded-lg transition-colors ${
-              darkMode ? 'bg-gray-700 text-gray-200 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              darkMode ? 'bg-gray-700 text-gray-200 border border-gray-600 hover:bg-gray-600' : 'bg-gray-100 border border-gray-300 text-gray-700 hover:bg-gray-200'
             }`}
           >
             <Settings className="w-30 h-4" />
