@@ -103,7 +103,7 @@ const MotionGraph: React.FC<MotionGraphProps> = ({ results, darkMode }) => {
     // Draw position profile
     if (results.torqueProfile.length > 0) {
       ctx.beginPath();
-      ctx.strokeStyle = '#22c55e';
+      ctx.strokeStyle = '#f16366';
       ctx.lineWidth = 2;
 
       results.torqueProfile.forEach((point, i) => {
