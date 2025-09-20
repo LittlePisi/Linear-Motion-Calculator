@@ -168,5 +168,3 @@ const MotorGraph: React.FC<MotorGraphProps> = ({ results, darkMode }) => {
 };
 
 export default MotorGraph;
-
-

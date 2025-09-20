@@ -57,7 +57,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
 
   return (
     <div className="space-y-8">
-      <div className={`p-6 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
+      <div className={`p-6 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white shadow-md shadow-gray-500'}`}>
         <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
           Результаты расчета
         </h3>
@@ -115,6 +115,22 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
               {results.Ld <= 200 && (
                 <span className="block text-sm font-normal">
                   Предупреждение: Крайне низкий ресурс ШВП
+                </span>
+              )}
+            </p>
+          </div>
+          
+          : ""}
+
+          {results.mod_guideServiceLife ? 
+          <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} ${results.mod_guideServiceLife <= 500 ? darkMode ? 'bg-red-900' : 'bg-red-300' : ''}`}>
+            <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Ресурс направляющей</p>
+            <p className={`text-lg font-semibold ${results.mod_guideServiceLife <= 500 ? 'text-red-600' : darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
+              {results.mod_guideServiceLife <= 10000 && (results.mod_guideServiceLife.toFixed(2))} 
+              {results.mod_guideServiceLife > 10000 && ("10.000+")} км
+              {results.mod_guideServiceLife <= 500 && (
+                <span className="block text-sm font-normal">
+                  Предупреждение: Крайне низкий ресурс направляющей
                 </span>
               )}
             </p>

@@ -12,7 +12,7 @@ import {Moon, Sun} from 'lucide-react';
 
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [params, setParams] = useLocalStorage<MotionParameters>('motionCalculatorParams', {
     stroke: 1000,
     travelTime: 2,
@@ -52,6 +52,13 @@ function App() {
     M_fp: 1,
     N_fp: 1,
     N_d: 1,
+    lever_Mx: 0,
+    lever_My: 0,
+    lever_Mz: 0,
+    lever_Fx: 0,
+    lever_Fy: 0,
+    lever_Fz: 0,
+    mod_pic: "",
     selectedLMSetName: "",
     selectedGBSetName: "",
     selectedMTSetName: "",
@@ -88,7 +95,7 @@ function App() {
             <h1 className={`text-4xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} border-left`}>
             
             
-              Drive Calculation Tool (beta v.0.96)
+              Drive Calculation Tool (beta v.0.97)
             </h1>
             
           </div>
@@ -122,13 +129,13 @@ function App() {
                 : 'bg-white text-gray-800 hover:bg-gray-100 shadow-md shadow-gray-500'
             }`}
           >
-            {darkMode ? <Sun className="w-30 h-5 mx-1 text-yellow-400" /> : <Moon className="w-30 h-5 mx-1 text-gray-500" />}
+            {darkMode ? <Sun className="w-30 h-5 mx-1 text-yellow-400" /> : <Moon className="w-30 h-5 mx-1 text-slate-500 fill-slate-500" />}
             <span className="hidden sm:inline">{darkMode ? 'Светлое оформление' : 'Темное оформление'}</span>
           </button>
         </header>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:sticky lg:top-8 h-fit">
+          <div className="lg:sticky lg:top-4 h-fit">
             <InputParameters 
               params={params} 
               setParams={setParams} 
@@ -147,7 +154,7 @@ function App() {
         </div>
 
         <div className={`mt-8 rounded-xl shadow-lg p-6 ${
-          darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white text-gray-600'
+          darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white text-gray-600 shadow-md shadow-gray-500'
         }`}>
           <div className="flex items-center gap-2 mb-4">
             <Info className={darkMode ? 'text-indigo-400' : 'text-indigo-600'} />

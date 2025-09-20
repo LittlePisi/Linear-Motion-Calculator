@@ -1,9 +1,12 @@
 import React from 'react';
 import { MotionParameters } from '../types';
-import { Settings, ArrowUp, ArrowRight } from 'lucide-react';
+import { ArrowUp, ArrowRight, TimerReset, Gauge } from 'lucide-react';
 import LMComboBox, { ParameterSet } from './LinearModuleCombobox';
 import GBComboBox, { GParameterSet } from './GearboxCombobox';
 import MTComboBox, {MTParameterSet} from './MotorCombobox';
+import { Tooltip as ReactTooltip } from "react-tooltip";    
+import styles from '../tooltip.css';
+
 
 interface InputParametersProps {
   params: MotionParameters;
@@ -43,6 +46,13 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
       ScrewDLR: toNum(sel.ScrewDLR),
       Screw_dr: toNum(sel.Screw_dr),
       Screw_la: toNum(sel.Screw_la),
+      mod_Mx: toNum(sel.mod_Mx),
+      mod_My: toNum(sel.mod_My),
+      mod_Mz: toNum(sel.mod_Mz),
+      mod_lever: toNum(sel.mod_lever),
+      mod_GSLM: toNum(sel.mod_GSLM),
+      mod_Zd: toNum(sel.mod_Zd),
+      mod_pic: sel.mod_pic,
     }));
   };
 
@@ -82,6 +92,7 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
       M_fp: toNum(sel.M_fp),
       N_fp: toNum(sel.N_fp),
       N_d: toNum(sel.N_d),
+      mot_pic: sel.mot_pic,
     }));
   };
 
@@ -95,7 +106,20 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
 //    { label: 'Передаточное число', key: 'reductionRatio', unit: ':1', step: 1, min: 0 },
 //    { label: 'Инерция двигателя', key: 'motorRotorInertia', unit: 'кг⋅cм²', step: 0.01, min: 0 },
     { label: 'Время паузы', key: 'pauseTime', unit: 'с', step: 0.1, min: 0 },
+    
   ];
+
+  const massleverParameters = [
+    { label: 'X', key:'lever_Mx', unit: 'мм' },
+    { label: 'Y', key:'lever_My', unit: 'мм' },
+    { label: 'Z', key:'lever_Mz', unit: 'мм' },
+  ]
+
+  const forceleverParameters = [
+    { label: 'X', key:'lever_Fx', unit: 'мм' },
+    { label: 'Y', key:'lever_Fy', unit: 'мм' },
+    { label: 'Z', key:'lever_Fz', unit: 'мм' },
+  ]
 
   const travelTimeParameters = [
     { label: 'Время перемещения', key: 'travelTime', unit: 'с', step: 0.1, min: 0 },
@@ -110,7 +134,7 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
   ];
 
   return (
-    <div className={`rounded-xl shadow-lg p-4 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+    <div className={`rounded-xl shadow-lg p-4 ${darkMode ? 'bg-gray-800' : 'bg-white shadow-md shadow-gray-500'}`}>
       <div className="flex flex-col gap-4 mb-4">
         <div className="flex items-center justify-between">
           <h2 className={`text-xl pb-2 font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
@@ -119,22 +143,21 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
         </div>
       </div>
 
-      <div className="space-y-3">
-        <div className="flex gap-2 items-center ">
+      <div className="space-y-2.5">
+        <div className="flex gap-2 items-center">
           <label className={`text-sm w-1/3 ${darkMode ? 'text-gray-300  border-gray-600' : 'text-gray-700  border-gray-300'}`}>Ориентация</label>
           <button
             onClick={() => setParams(prev => ({ ...prev, isVertical: !prev.isVertical }))}
             className={`flex items-center gap-1 w-2/3 px-3 py-1.5 rounded-lg transition-colors ${
               darkMode ? 'bg-gray-700 text-gray-200 border border-gray-600 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200'
             }`}
-            title={params.isVertical ? 'Vertical Application' : 'Horizontal Application'}
           >
             {params.isVertical ? <ArrowUp className="w-30 h-4" /> : <ArrowRight className="w-30 h-4" />}
             <span className="hidden sm:inline">{params.isVertical ? 'Вертикальный' : 'Горизонтальный'}</span>
           </button>
         </div>
 
-        <div className="flex gap-2 items-center ">
+        <div className="flex gap-2 items-center space-y-0">
           <label className={`text-sm w-1/3 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Метод расчёта</label>
           <button
             onClick={() => setParams(prev => ({ ...prev, useMaxSpeedMode: !prev.useMaxSpeedMode }))}
@@ -142,34 +165,84 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
               darkMode ? 'bg-gray-700 text-gray-200 border border-gray-600 hover:bg-gray-600' : 'bg-gray-100 border border-gray-300 text-gray-700 hover:bg-gray-200'
             }`}
           >
-            <Settings className="w-30 h-4" />
+            {params.useMaxSpeedMode ? <Gauge className="w-30 h-4" /> : <TimerReset className="w-30 h-4" />}
+            
             <span className="hidden sm:inline">{params.useMaxSpeedMode ? 'Максимальная скорость' : 'Время перемещения'}</span>
           </button>
         </div>
 
         {/* Linear Module */}
-        <LMComboBox
-          onSelectSet={handleLMSelect}
-          darkMode={darkMode}
-          selectedSetName={params.selectedLMSetName}
-          setSelectedSetName={(name) => setParams(prev => ({ ...prev, selectedLMSetName: name }))}
-        />
+        <div data-tooltip-id="my-tooltip-2">
+          <LMComboBox
+            onSelectSet={handleLMSelect}
+            darkMode={darkMode}
+            selectedSetName={params.selectedLMSetName}
+            setSelectedSetName={(name) => setParams(prev => ({ ...prev, selectedLMSetName: name }))}
+          />
+        
+          <ReactTooltip
+                id="my-tooltip-2"
+                place="right"
+                style={{ 
+                backgroundColor: '#00adef', 
+                color: '#222', 
+                padding: '10px', 
+                borderRadius: '6px' 
+                
+                }}               
+                opacity={0.93}
+                content=<img className="picture" src={params.mod_pic} width="200" height="200" align='left' />
+          />
+        </div>
 
         {/* Gearbox */}
-        <GBComboBox
-          onSelectSet={handleGBSelect}
-          darkMode={darkMode}
-          selectedGBSetName={params.selectedGBSetName}
-          setSelectedSetName={(name) => setParams(prev => ({ ...prev, selectedGBSetName: name }))}
-        />
+        <div data-tooltip-id="my-tooltip-4">
+          <GBComboBox
+            onSelectSet={handleGBSelect}
+            darkMode={darkMode}
+            selectedGBSetName={params.selectedGBSetName}
+            setSelectedSetName={(name) => setParams(prev => ({ ...prev, selectedGBSetName: name }))}
+          />
+
+            <ReactTooltip
+                id="my-tooltip-4"
+                place="right"
+                style={{ 
+                backgroundColor: '#00adef', 
+                color: '#222', 
+                padding: '10px', 
+                borderRadius: '6px' 
+                
+                }}               
+                opacity={0.93}
+                content=<img className="picture" src={'../gearbox.png'} width="150" height="150" align='left' />
+            />
+          
+        </div>
 
         {/* Motor */}
-        <MTComboBox
-          onSelectSet={handleMTSelect}
-          darkMode={darkMode}
-          selectedMTSetName={params.selectedMTSetName}
-          setSelectedSetName={(name) => setParams(prev => ({ ...prev, selectedMTSetName: name }))}
-        />
+        <div data-tooltip-id="my-tooltip-3">
+          <MTComboBox
+            onSelectSet={handleMTSelect}
+            darkMode={darkMode}
+            selectedMTSetName={params.selectedMTSetName}
+            setSelectedSetName={(name) => setParams(prev => ({ ...prev, selectedMTSetName: name }))}
+          />
+
+          <ReactTooltip
+                id="my-tooltip-3"
+                place="right"
+                style={{ 
+                backgroundColor: '#00adef', 
+                color: '#222', 
+                padding: '10px', 
+                borderRadius: '6px' 
+                
+                }}               
+                opacity={0.93}
+                content=<img className="picture" src={params.mot_pic} width="200" height="200" align='left' />
+          />
+        </div>
 
         {(params.useMaxSpeedMode ? maxSpeedParameters : travelTimeParameters).map(({ label, key, unit, step, min }) => (
           <div key={key} className="flex items-center gap-2">
@@ -214,6 +287,77 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
             </div>
           </div>
         ))}
+      
+
+
+        {/* Masslever */}
+      <div data-tooltip-id="my-tooltip-1" className=" items-center gap-2 space-y-1.5">
+        <label className={`text-sm w-1/6 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Положение центра масс</label>
+        <div className="mt-2 grid grid-cols-3 gap-3">
+          {massleverParameters.map(({ label, key, unit}) => (
+            <div key={key} className="flex items-center gap-0.1 ">
+              <label className={`text-sm w-1/6 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{label}</label>
+              <div className="flex-1 relative">
+                <input
+                  
+                  value={(params as any)[key] ?? ''}
+                  onChange={(e) => handleInputChange(key as keyof MotionParameters, e.target.value)}
+                  className={`w-full pl-3 pr-3 py-1.5 rounded-lg outline-none transition-colors ${
+                    darkMode ? 'bg-gray-700 border border-gray-600 text-gray-200 focus:border-gray-500'
+                            : 'border border-gray-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500'
+                  }`}
+                />
+                <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  {unit}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <ReactTooltip
+        id="my-tooltip-1"
+        place="top"
+        style={{ 
+        backgroundColor: '#00adef', 
+        color: '#222', 
+        padding: '10px', 
+        borderRadius: '6px'        
+        }}               
+        opacity={0.93}
+        content=<img className="logo-picture" src={'../xyz.png'} width="200" height="200" align='left' />
+      />
+      
+      
+      
+      {/* ForceLever */}
+      <div data-tooltip-id="my-tooltip-1" className=" items-center gap-2 space-y-1.5">
+        <label className={`text-sm w-1/6 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Точка приложения усилия</label>
+        <div className="mt-2 grid grid-cols-3 gap-3">
+          {forceleverParameters.map(({ label, key, unit}) => (
+            <div key={key} className="flex items-center gap-0.1 ">
+              <label className={`text-sm w-1/6 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{label}</label>
+              <div className="flex-1 relative">
+                <input
+                  
+                  value={(params as any)[key] ?? ''}
+                  onChange={(e) => handleInputChange(key as keyof MotionParameters, e.target.value)}
+                  className={` w-full pl-3 pr-3 py-1.5 rounded-lg outline-none transition-colors ${
+                    darkMode ? 'bg-gray-700 border border-gray-600 text-gray-200 focus:border-gray-500'
+                            : 'border border-gray-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500'
+                  }`}
+                />
+                <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  {unit}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+  
+
       </div>
     </div>
   );

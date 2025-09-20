@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as ExcelJS from 'exceljs';
+import { Tooltip as ReactTooltip } from "react-tooltip";  
 
 export interface ParameterSet {
   name: string;
@@ -11,6 +12,13 @@ export interface ParameterSet {
   ScrewDLR: string;
   Screw_dr: string;
   Screw_la: string;
+  mod_Mx: string;
+  mod_My: string;
+  mod_Mz: string;
+  mod_lever: string;
+  mod_GSLM: string;
+  mod_Zd: string;
+  mod_pic: string;
 }
 
 interface LMComboBoxProps {
@@ -51,6 +59,13 @@ const LMComboBox: React.FC<LMComboBoxProps> = ({
               ScrewDLR: row.getCell(7).text,
               Screw_dr: row.getCell(8).text,
               Screw_la: row.getCell(9).text,
+              mod_Mx: row.getCell(10).text,
+              mod_My: row.getCell(11).text,
+              mod_Mz: row.getCell(12).text,
+              mod_lever: row.getCell(13).text,
+              mod_GSLM: row.getCell(14).text,
+              mod_Zd: row.getCell(15).text,
+              mod_pic: row.getCell(16).text,
             });
           }
         });

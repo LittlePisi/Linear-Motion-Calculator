@@ -41,6 +41,20 @@ export interface MotionParameters {
   M_fp: number;
   N_fp: number;
   N_d: number;
+  lever_Mx: number;
+  lever_My: number;
+  lever_Mz: number;
+  lever_Fx: number;
+  lever_Fy: number;
+  lever_Fz: number;
+  mod_Mx: number;
+  mod_My: number;
+  mod_Mz: number;
+  mod_lever: number;
+  mod_GSML: number;
+  mod_Zd: number;
+  mod_pic: string;
+  mot_pic: string;
 }
 
 export interface MotionResults {
@@ -78,6 +92,7 @@ export interface MotionResults {
   M_fp: number;
   N_fp: number;
   N_d: number;
+  mod_guideServiceLife: number,
 //  constantLoadTorque: number;
 //  loadInertia: number;
 //  angAcceleration: number;

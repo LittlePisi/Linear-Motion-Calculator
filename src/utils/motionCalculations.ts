@@ -80,7 +80,21 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     M_fp,
     N_fp,
     N_d,
+    lever_Mx,
+    lever_My,
+    lever_Mz,
+    lever_Fx,
+    lever_Fy,
+    lever_Fz,
+    mod_Mx,
+    mod_My,
+    mod_Mz,
+    mod_lever,
+    mod_GSLM,
+    mod_Zd,
+    mod_pic
   } = params;
+
 
   // Validation
   if (stroke <= 0) throw new Error('Ход должен быть больше 0');
@@ -315,6 +329,20 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
   const rmsCurrent : number = meanTorque / M_torqueConstant;
   const maxCurrent : number = maxTorque / M_torqueConstant;
 
+  // Calculating linear guide service life
+  const Mx = isVertical
+              ? 0
+              : ((mass * GRAVITY) * lever_My/1000);
+  const My = isVertical
+              ? ((mass * GRAVITY) * lever_Mz/1000 + mod_lever/1000) - (externalForce * lever_Fz/1000) + (Fxm * mod_Zd/1000)
+              : (Fxm * lever_Mz/1000 + mod_lever/1000) + ((mass * GRAVITY) * lever_Mx/1000) - (externalForce * lever_Fz/1000) + (Fxm * mod_Zd/1000);
+  const Mz = isVertical
+              ? ((mass * GRAVITY) * lever_My/1000) - (externalForce * lever_Fy/1000)
+              : (externalForce * lever_Fy/1000);
+
+  const fv = Mx/mod_Mx + My/mod_My + Mz/mod_Mz;
+  const mod_guideServiceLife = 1 / Math.pow(fv, 3) * mod_GSLM;
+
 
   // Console result output
   
@@ -358,14 +386,15 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     console.log({Fp});
     console.log({rmsCurrent});
     console.log({maxCurrent});
+    console.log({Mx});
+    console.log({My});
+    console.log({Mz});
 
   // Calculating max allowable motor torque at slope
     const k = (M_max - 0) / (N_max - N_d);
-    console.log({k});
     const a = (0 + k * N_max) / M_max;
-    console.log({a});
     const M_slope = maxRPM > N_d ? (a * M_max - k * maxRPM) : M_max; 
-    console.log({M_slope});
+    
 
   // Overload/overspeed error handling 
     if (M_Fmax <= Fmax) throw new Error('Превышение допустимого усилия подачи для привода. Выберите больший типоразмер привода или шаг винта.');
@@ -413,6 +442,6 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     Ld,
     rmsCurrent,
     maxCurrent,
-
+    mod_guideServiceLife,
   };
 }
