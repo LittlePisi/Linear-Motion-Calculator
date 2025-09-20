@@ -215,7 +215,7 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
                 
                 }}               
                 opacity={0.93}
-                content=<img className="picture" src={'../gearbox.png'} width="150" height="150" align='left' />
+                content=<img className="picture" src={'https://i.postimg.cc/7LpTGqws/gearbox.png'} width="150" height="150" align='left' />
             />
           
         </div>
@@ -326,7 +326,7 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
         borderRadius: '6px'        
         }}               
         opacity={0.93}
-        content=<img className="logo-picture" src={'../xyz.png'} width="200" height="200" align='left' />
+        content=<img className="logo-picture" src={'https://i.postimg.cc/vHR3Fdnv/1-1.png'} width="200" height="200" align='left' />
       />
       
       
