@@ -5,7 +5,7 @@ import LMComboBox, { ParameterSet } from './LinearModuleCombobox';
 import GBComboBox, { GParameterSet } from './GearboxCombobox';
 import MTComboBox, {MTParameterSet} from './MotorCombobox';
 import { Tooltip as ReactTooltip } from "react-tooltip";    
-import styles from '../tooltip.css';
+
 
 
 interface InputParametersProps {
@@ -53,6 +53,8 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
       mod_GSLM: toNum(sel.mod_GSLM),
       mod_Zd: toNum(sel.mod_Zd),
       mod_pic: sel.mod_pic,
+      mod_maxSpeed: toNum(sel.mod_maxSpeed),
+      mod_maxAcc: toNum(sel.mod_maxAcc),
     }));
   };
 
@@ -143,8 +145,8 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
         </div>
       </div>
 
-      <div className="space-y-2.5">
-        <div className="flex gap-2 items-center">
+      <div  className="space-y-2.5">
+        <div data-tooltip-id="my-tooltip-5" className="flex gap-2 items-center">
           <label className={`text-sm w-1/3 ${darkMode ? 'text-gray-300  border-gray-600' : 'text-gray-700  border-gray-300'}`}>Ориентация</label>
           <button
             onClick={() => setParams(prev => ({ ...prev, isVertical: !prev.isVertical }))}
@@ -155,9 +157,30 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
             {params.isVertical ? <ArrowUp className="w-30 h-4" /> : <ArrowRight className="w-30 h-4" />}
             <span className="hidden sm:inline">{params.isVertical ? 'Вертикальный' : 'Горизонтальный'}</span>
           </button>
+            <ReactTooltip
+                id="my-tooltip-5"
+                place="right"
+                clickable
+                style={{ 
+                backgroundColor: '#00adef', 
+                color: '#222', 
+                padding: '1px', 
+                margin: '0px',
+                borderRadius: '6px' 
+                
+                }}               
+                opacity={1}
+          >
+            <div className={`flex flex-col gap-1 rounded-md p-2 mb-0 ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white shadow-md shadow-gray-500 text-gray-700'}`}>
+              <label className='font-extrabold py-1'>Ориентация расчётного перемещения</label>
+              <label className='font-semibold'>Изменяет ориентацию расчётного перемещения.</label>
+              <label className='font-semibold'>Указывает выбранную в данный момент ориентацию.</label>
+            </div>
+          </ReactTooltip>
+
         </div>
 
-        <div className="flex gap-2 items-center space-y-0">
+        <div data-tooltip-id="my-tooltip-6" className="flex gap-2 items-center space-y-0">
           <label className={`text-sm w-1/3 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Метод расчёта</label>
           <button
             onClick={() => setParams(prev => ({ ...prev, useMaxSpeedMode: !prev.useMaxSpeedMode }))}
@@ -169,6 +192,29 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
             
             <span className="hidden sm:inline">{params.useMaxSpeedMode ? 'Максимальная скорость' : 'Время перемещения'}</span>
           </button>
+
+            <ReactTooltip
+                id="my-tooltip-6"
+                place="right"
+                clickable
+                style={{ 
+                backgroundColor: '#00adef', 
+                color: '#222', 
+                padding: '1px', 
+                margin: '0px',
+                borderRadius: '6px' 
+                
+                }}               
+                opacity={1}
+          >
+            <div className={`flex flex-col gap-1 rounded-md p-2 mb-0 ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white shadow-md shadow-gray-500 text-gray-700'}`}>
+              <label className='font-extrabold py-1'>Метода расчёта профиля перемещения</label>
+              <label className='font-semibold'>Изменяет тип вводных данных.</label>
+              <label className='font-semibold'>Доступно два режима:</label>
+              <label className='font-semibold'>  t, a , d - время перемещения, ускорение, замедление</label>
+              <label className='font-semibold'>  V, a , d - максимальная скорость, ускорение, замедление</label>
+            </div>
+          </ReactTooltip>
         </div>
 
         {/* Linear Module */}
@@ -179,20 +225,31 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
             selectedSetName={params.selectedLMSetName}
             setSelectedSetName={(name) => setParams(prev => ({ ...prev, selectedLMSetName: name }))}
           />
-        
+
           <ReactTooltip
                 id="my-tooltip-2"
                 place="right"
+                clickable
                 style={{ 
                 backgroundColor: '#00adef', 
                 color: '#222', 
-                padding: '10px', 
+                padding: '1px', 
+                margin: '0px',
                 borderRadius: '6px' 
                 
                 }}               
-                opacity={0.93}
-                content=<img className="picture" src={params.mod_pic} width="200" height="200" align='left' />
-          />
+                opacity={1}
+          >
+            <div className={`flex flex-col gap-1 rounded-md p-2 mb-0 ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white shadow-md shadow-gray-500 text-gray-700'}`}>
+              <label className='font-extrabold py-1'>Технические характеристики</label>
+              <label className='font-semibold'>Модель привода: {params.selectedLMSetName}</label>
+              <label className='font-semibold'>Постоянная подачи: {params.lead} мм/об</label>
+              <label className='font-semibold'>Макс. усилие: {( params.M_maxTorque / ( ( params.lead / 1000 ) / ( 2 * 3.14 ) ) ).toFixed(0)} Н</label>
+              <label className='font-semibold'>Макс. скорость: {params.mod_maxSpeed} м/с</label>
+              <label className='font-semibold'>Макс. ускорение: {params.mod_maxAcc} м/с²</label>
+              <img className="picture" src={params.mod_pic} width="200" height="200" align='left' />
+            </div>
+          </ReactTooltip>
         </div>
 
         {/* Gearbox */}
@@ -207,16 +264,26 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
             <ReactTooltip
                 id="my-tooltip-4"
                 place="right"
+                clickable
                 style={{ 
                 backgroundColor: '#00adef', 
                 color: '#222', 
-                padding: '10px', 
+                padding: '1px', 
+                margin: '0px',
                 borderRadius: '6px' 
                 
                 }}               
-                opacity={0.93}
-                content=<img className="picture" src={'https://i.postimg.cc/7LpTGqws/gearbox.png'} width="150" height="150" align='left' />
-            />
+                opacity={params.G_eff < 1 ? 1 : 0}
+            >
+            <div className={`flex flex-col gap-1 rounded-md p-2 mb-0 ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white shadow-md shadow-gray-500 text-gray-700'}`}>
+              <label className='font-extrabold py-1'>Технические характеристики</label>
+              <label className='font-semibold'>Модель редуктора: {params.selectedGBSetName}</label>
+              <label className='font-semibold'>Макс. момент: {params.G_maxTorque} Н⋅м</label>
+              <label className='font-semibold'>Макс. скорость: 3000 об/мин</label>
+              <label className='font-semibold'>КПД: {params.G_eff * 100} %</label>
+              <img className="picture" src={'https://i.postimg.cc/7LpTGqws/gearbox.png'} width="150" height="150" align='left' />
+            </div>
+          </ReactTooltip>
           
         </div>
 
@@ -232,16 +299,28 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
           <ReactTooltip
                 id="my-tooltip-3"
                 place="right"
+                clickable
                 style={{ 
                 backgroundColor: '#00adef', 
                 color: '#222', 
-                padding: '10px', 
+                padding: '1px', 
+                margin: '0px',
                 borderRadius: '6px' 
                 
                 }}               
-                opacity={0.93}
-                content=<img className="picture" src={params.mot_pic} width="200" height="200" align='left' />
-          />
+                opacity={1}
+                
+          >
+          <div className={`flex flex-col gap-1 rounded-md p-2 mb-0 ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white shadow-md shadow-gray-500 text-gray-700'}`}>
+              <label className='font-extrabold py-1'>Технические характеристики</label>
+              <label className='font-semibold'>Модель двигателя: {params.selectedMTSetName}</label>
+              <label className='font-semibold'>Номинальный момент: {params.M_nom} Н⋅м</label>
+              <label className='font-semibold'>Номинальная скорость: {params.N_nom} об/мин</label>
+              <label className='font-semibold'>Пиковый момент: {params.M_max} Н⋅м</label>
+              <label className='font-semibold'>Пиковая скорость: {params.N_max} об/мин</label>
+              <img className="picture" src={params.mot_pic} width="200" height="200" align='left' />
+            </div>
+          </ReactTooltip>
         </div>
 
         {(params.useMaxSpeedMode ? maxSpeedParameters : travelTimeParameters).map(({ label, key, unit, step, min }) => (
@@ -319,16 +398,20 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
       <ReactTooltip
         id="my-tooltip-1"
         place="top"
+        clickable
         style={{ 
         backgroundColor: '#00adef', 
         color: '#222', 
-        padding: '10px', 
-        borderRadius: '6px'        
-        }}               
-        opacity={0.93}
-        content=<img className="logo-picture" src={'https://i.postimg.cc/vHR3Fdnv/1-1.png'} width="200" height="200" align='left' />
-      />
-      
+        padding: '1px', 
+        margin: '0px',
+        borderRadius: '6px'           
+       }}                        
+        opacity={1}
+      >
+      <div className={`flex flex-col gap-1 rounded-md p-2 mb-0 ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white shadow-md shadow-gray-500 text-gray-700'}`}>
+              <img className="picture" src={'https://i.postimg.cc/vHR3Fdnv/1-1.png'} width="200" height="200" align='left' />
+      </div>
+      </ReactTooltip>
       
       
       {/* ForceLever */}

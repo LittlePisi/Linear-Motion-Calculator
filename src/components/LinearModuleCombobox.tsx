@@ -19,6 +19,8 @@ export interface ParameterSet {
   mod_GSLM: string;
   mod_Zd: string;
   mod_pic: string;
+  mod_maxSpeed: string;
+  mod_maxAcc: string;
 }
 
 interface LMComboBoxProps {
@@ -66,6 +68,8 @@ const LMComboBox: React.FC<LMComboBoxProps> = ({
               mod_GSLM: row.getCell(14).text,
               mod_Zd: row.getCell(15).text,
               mod_pic: row.getCell(16).text,
+              mod_maxSpeed: row.getCell(17).text,
+              mod_maxAcc: row.getCell(18).text,
             });
           }
         });

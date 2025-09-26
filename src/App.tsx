@@ -12,7 +12,7 @@ import {Moon, Sun} from 'lucide-react';
 
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [params, setParams] = useLocalStorage<MotionParameters>('motionCalculatorParams', {
     stroke: 1000,
     travelTime: 2,
@@ -83,21 +83,14 @@ function App() {
       darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-blue-50 to-indigo-50'
     }`}>
       <div className="container mx-auto px-4 py-8">
-        <header className="text-center mb-12">
+        <header className="text-center mb-12 print:hidden">
           <img className="logo-picture" src={mainLogo} width="150" height="150" align='left' />
           <br></br> 
           <br></br> 
-          <div className="flex items-center justify-center gap-3 mb-4">
-            
-              
-              
-            <br></br>  
-            <h1 className={`text-4xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} border-left`}>
-            
-            
-              Drive Calculation Tool (beta v.0.97)
+          <div className="flex items-center justify-center gap-3 mb-4">                                       
+            <h1 className={`text-4xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} border-left`}>     
+                    Drive Calculation Tool (beta v.0.97)
             </h1>
-            
           </div>
 
 
@@ -133,8 +126,10 @@ function App() {
             <span className="hidden sm:inline">{darkMode ? 'Светлое оформление' : 'Темное оформление'}</span>
           </button>
         </header>
-
+        
+        
         <div className="grid lg:grid-cols-3 gap-8">
+          
           <div className="lg:sticky lg:top-4 h-fit">
             <InputParameters 
               params={params} 
@@ -142,6 +137,7 @@ function App() {
               darkMode={darkMode}
             />
           </div>
+          
           <div className="lg:col-span-2">
             <ResultsDisplay 
               results={results} 
@@ -152,8 +148,9 @@ function App() {
             />
           </div>
         </div>
+        
 
-        <div className={`mt-8 rounded-xl shadow-lg p-6 ${
+        <div className={`mt-8 rounded-xl shadow-lg p-6 print:hidden ${
           darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white text-gray-600 shadow-md shadow-gray-500'
         }`}>
           <div className="flex items-center gap-2 mb-4">

@@ -55,6 +55,8 @@ export interface MotionParameters {
   mod_Zd: number;
   mod_pic: string;
   mot_pic: string;
+  mod_maxSpeed: number,
+  mod_maxAcc: number,
 }
 
 export interface MotionResults {
