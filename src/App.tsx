@@ -12,7 +12,7 @@ import {Moon, Sun} from 'lucide-react';
 
 
 function App() {
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
   const [params, setParams] = useLocalStorage<MotionParameters>('motionCalculatorParams', {
     stroke: 1000,
     travelTime: 2,
