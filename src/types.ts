@@ -51,7 +51,7 @@ export interface MotionParameters {
   mod_My: number;
   mod_Mz: number;
   mod_lever: number;
-  mod_GSML: number;
+  mod_GSLM: number;
   mod_Zd: number;
   mod_pic: string;
   mot_pic: string;

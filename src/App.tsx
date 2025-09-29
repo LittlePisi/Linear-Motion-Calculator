@@ -12,17 +12,17 @@ import {Moon, Sun} from 'lucide-react';
 
 
 function App() {
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
   const [params, setParams] = useLocalStorage<MotionParameters>('motionCalculatorParams', {
     stroke: 1000,
     travelTime: 2,
     acceleration: 2000,
     deceleration: 2000,
-    mass: 10,
+    mass: 1,
     lead: 99,
     externalInertia: 0.0001,
     reductionRatio: 1,
-    motorRotorInertia: 0.003,
+    motorRotorInertia: 0.06,
     pauseTime: 0.3,
     maxSpeed: 500,
     useMaxSpeedMode: false,
@@ -34,12 +34,12 @@ function App() {
     externalForce: 0,
     //idleTorque: 0.5,
     M_idleTorque: 0.1,
-    M_zsInertia: 0.93,
-    M_pmInertia: 0.09,
+    M_zsInertia: 0.00009256,
+    M_pmInertia: 0.00000946,
     M_maxTorque: "6",
-    ScrewDLR: 4000,
-    Screw_dr: 12,
-    Screw_la: 100,
+    ScrewDLR: 0,
+    Screw_dr: 0,
+    Screw_la: 0,
     G_idleTorque: 0,
     G_Inertia: 0,
     G_eff: 1,

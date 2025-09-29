@@ -340,7 +340,7 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
               ? ((mass * GRAVITY) * lever_My/1000) - (externalForce * lever_Fy/1000)
               : (externalForce * lever_Fy/1000);
 
-  const fv = Mx/mod_Mx + My/mod_My + Mz/mod_Mz;
+  const fv = Math.abs(Mx)/mod_Mx + Math.abs(My)/mod_My + Math.abs(Mz)/mod_Mz;
   const mod_guideServiceLife = 1 / Math.pow(fv, 3) * mod_GSLM;
 
 

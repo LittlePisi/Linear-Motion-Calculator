@@ -2,6 +2,8 @@ import React from 'react';
 import { MotionResults } from '../types';
 import MotionGraph from './MotionGraph';
 import MotorGraph from './MotorGraph';
+import { Info } from 'lucide-react';
+import { Tooltip as ReactTooltip } from "react-tooltip";    
 
 interface ResultsDisplayProps {
   results: MotionResults | null;
@@ -107,12 +109,16 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
           </div>
           
           {results.Ld ? 
-          <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} ${results.Ld <= 200 ? darkMode ? 'bg-red-900' : 'bg-red-300' : ''}`}>
-            <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Ресурс ШВП</p>
-            <p className={`text-lg font-semibold ${results.Ld <= 200 ? 'text-red-600' : darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
+          <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} ${results.Ld <= 500 ? darkMode ? 'bg-red-900' : 'bg-red-300' : ''}`}>
+            <div className='flex items-center gap-0'> 
+              <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Ресурс ШВП</p>
+              <Info data-tooltip-id="my-tooltip-7" className='text-blue-400 h-4' /> 
+            </div>
+            
+            <p className={`text-lg font-semibold ${results.Ld <= 500 ? 'text-red-600' : darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
               {results.Ld <= 10000 && (results.Ld.toFixed(2))} 
               {results.Ld > 10000 && ("10.000+")} км
-              {results.Ld <= 200 && (
+              {results.Ld <= 500 && (
                 <span className="block text-sm font-normal">
                   Предупреждение: Крайне низкий ресурс ШВП
                 </span>
@@ -124,7 +130,10 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
 
           {results.mod_guideServiceLife ? 
           <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} ${results.mod_guideServiceLife <= 500 ? darkMode ? 'bg-red-900' : 'bg-red-300' : ''}`}>
-            <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Ресурс направляющей</p>
+            <div className='flex items-center gap-0'> 
+              <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Ресурс направляющей</p>
+              <Info data-tooltip-id="my-tooltip-7" className='text-blue-400 h-4' />
+            </div>
             <p className={`text-lg font-semibold ${results.mod_guideServiceLife <= 500 ? 'text-red-600' : darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
               {results.mod_guideServiceLife <= 10000 && (results.mod_guideServiceLife.toFixed(2))} 
               {results.mod_guideServiceLife > 10000 && ("10.000+")} км
@@ -186,6 +195,30 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
           
         </div>
       )}
+    <ReactTooltip
+                id="my-tooltip-7"
+                place="right"
+                clickable
+                style={{ 
+                backgroundColor: '#00adef', 
+                color: '#222', 
+                padding: '1px', 
+                margin: '0px',
+                borderRadius: '6px' 
+                
+                }}               
+                opacity={1}
+          >
+            <div className={`flex flex-col gap-1 rounded-md p-2 mb-0 ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white shadow-md shadow-gray-500 text-gray-700'}`}>
+              <label className='font-extrabold py-1'>Базовый ресурс</label>
+              <label className='font-semibold py-1'>Действителен при условии эксплуатации без ударов и вибраций,</label>
+              <label className='font-semibold py-1'>попадании твердых частиц или жидкостей на механизм.</label>
+              <label className='font-semibold py-1'>При наличии ударов и вибраций:</label>
+              <label className='font-semibold py-1'> - средней силы - умножь расчётное значение на 0.45 </label>
+              <label className='font-semibold py-1'> - большой силы - умножь расчётное значение на 0.25 </label>
+            </div>
+          </ReactTooltip>
+
     </div>
   );
 };
