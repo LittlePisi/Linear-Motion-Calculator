@@ -282,6 +282,7 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
             <div className={`flex flex-col gap-1 rounded-md p-2 mb-0 ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white shadow-md shadow-gray-500 text-gray-700'}`}>
               <label className='font-extrabold py-1'>Технические характеристики</label>
               <label className='font-semibold'>Модель редуктора: {params.selectedGBSetName}</label>
+              <label className='font-semibold'>Передаточное число: {params.reductionRatio}</label>
               <label className='font-semibold'>Макс. момент: {params.G_maxTorque} Н⋅м</label>
               <label className='font-semibold'>Макс. скорость: 3000 об/мин</label>
               <label className='font-semibold'>КПД: {params.G_eff * 100} %</label>
