@@ -18,7 +18,7 @@ const MotorGraph: React.FC<MotorGraphProps> = ({ results, darkMode }) => {
 
     const width = canvas.width;
     const height = canvas.height;
-    const padding = 60;
+    const padding = 75;
 
     // Clear canvas
     ctx.clearRect(0, 0, width, height);
@@ -60,7 +60,7 @@ const MotorGraph: React.FC<MotorGraphProps> = ({ results, darkMode }) => {
     ctx.stroke();
 
     // Draw grid and labels
-    ctx.font = '12px Arial';
+    ctx.font = '18px Arial';
     ctx.fillStyle = darkMode ? '#9ca3af' : '#64748b';
 
 
@@ -86,14 +86,14 @@ const MotorGraph: React.FC<MotorGraphProps> = ({ results, darkMode }) => {
     // Draw peak torque profile
     ctx.beginPath();
     ctx.strokeStyle = '#f16366';
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 5;
     ctx.moveTo(0 + padding,  padding);
     ctx.lineTo(results.N_d * scaleX + padding,  padding);
     ctx.stroke();
 
     ctx.beginPath();
     ctx.strokeStyle = '#f16366';
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 5;
     ctx.moveTo(results.N_d * scaleX + padding, padding);
     ctx.lineTo(maxRPM * scaleX + padding, (maxTorque * scaleYTorque + padding));
     ctx.stroke();
@@ -101,14 +101,14 @@ const MotorGraph: React.FC<MotorGraphProps> = ({ results, darkMode }) => {
     // Draw rated torque profile
     ctx.beginPath();
     ctx.strokeStyle = '#00adef';
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 5;
     ctx.moveTo(0 + padding, height - (ratedTorque * scaleYTorque) - padding);
     ctx.lineTo(ratedRPM * scaleX + padding, height - (ratedTorque * scaleYTorque) - padding);
     ctx.stroke();
 
     ctx.beginPath();
     ctx.strokeStyle = '#00adef';
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 5;
     ctx.moveTo(ratedRPM * scaleX + padding, height - (ratedTorque * scaleYTorque) - padding);
     ctx.lineTo(results.N_fp * scaleX + padding, height - (results.M_fp * scaleYTorque) - padding);
     ctx.stroke();
@@ -116,51 +116,51 @@ const MotorGraph: React.FC<MotorGraphProps> = ({ results, darkMode }) => {
     // Draw mean work point
     ctx.beginPath();
     ctx.fillStyle = '#00adef';
-    ctx.arc(MeanRPM * scaleX + padding,  height - (RMSTorque * scaleYTorque) - padding, 4, 0, 2 * Math.PI, false);
+    ctx.arc(MeanRPM * scaleX + padding,  height - (RMSTorque * scaleYTorque) - padding, 6, 0, 2 * Math.PI, false);
     ctx.fill();
 
     // Draw max work point
     ctx.beginPath();
     ctx.fillStyle = '#f16366';
-    ctx.arc(MAXRPM * scaleX + padding,  height - (MAXTorque * scaleYTorque) - padding, 4, 0, 2 * Math.PI, false);
+    ctx.arc(MAXRPM * scaleX + padding,  height - (MAXTorque * scaleYTorque) - padding, 6, 0, 2 * Math.PI, false);
     ctx.fill();
 
   
 
     // Add legend
     const legendY = padding - 30;
-    ctx.font = '12px Arial';
+    ctx.font = '18px Arial';
     
     // Draw legend 
     ctx.strokeStyle = '#6366f1';
     ctx.beginPath();
     ctx.fillStyle = '#00adef';
-    ctx.arc(padding + 10, legendY, 4, 0, 2 * Math.PI, false);
+    ctx.arc(padding + 10, legendY, 6, 0, 2 * Math.PI, false);
     ctx.fill();
     ctx.fillStyle = '#00adef';
-    ctx.fillText('Среднеквадратичные значения', padding + 30, legendY + 4);
+    ctx.fillText('Среднеквадратичные значения', padding + 30, legendY + 6);
 
     ctx.strokeStyle = '#6366f1';
     ctx.beginPath();
     ctx.fillStyle = '#f16366';
-    ctx.arc(padding + 300, legendY, 4, 0, 2 * Math.PI, false);
+    ctx.arc(padding + 330, legendY, 6, 0, 2 * Math.PI, false);
     ctx.fill();
     ctx.fillStyle = '#f16366';
-    ctx.fillText('Пиковые значения', padding + 320, legendY + 4);
+    ctx.fillText('Пиковые значения', padding + 350, legendY + 6);
 
 
 
   }, [results, darkMode]);
 
   return (
-    <div className={`p-6 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
+    <div className={`p-6 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white shadow-md shadow-gray-500'} shadow-lg`}>
       <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
         Механическая характеристика двигателя {results.MotorName}
       </h3>
       <canvas
         ref={canvasRef}
-        width={800}
-        height={400}
+        width={1200}
+        height={600}
         className="w-full h-auto rounded-lg"
       />
     </div>

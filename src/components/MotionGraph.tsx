@@ -18,7 +18,7 @@ const MotionGraph: React.FC<MotionGraphProps> = ({ results, darkMode }) => {
 
     const width = canvas.width;
     const height = canvas.height;
-    const padding = 60;
+    const padding = 75;
 
     // Clear canvas
     ctx.clearRect(0, 0, width, height);
@@ -53,7 +53,7 @@ const MotionGraph: React.FC<MotionGraphProps> = ({ results, darkMode }) => {
     ctx.stroke();
 
     // Draw grid and labels
-    ctx.font = '12px Arial';
+    ctx.font = '18px Arial';
     ctx.fillStyle = darkMode ? '#9ca3af' : '#64748b';
 
     // Time labels with pause time indication
@@ -76,7 +76,7 @@ const MotionGraph: React.FC<MotionGraphProps> = ({ results, darkMode }) => {
     // Velocity labels (left)
     for (let v = 0; v <= maxVelocity; v += maxVelocity / 4) {
       const y = height - padding - v * scaleYVelocity;
-      ctx.fillText(v.toFixed(0) + 'мм/с', 2, y + 4);
+      ctx.fillText(v.toFixed(0) + 'мм/с', 0, y + 4);
     }
 
     // Position labels (right)
@@ -89,7 +89,7 @@ const MotionGraph: React.FC<MotionGraphProps> = ({ results, darkMode }) => {
     if (results.torqueProfile.length > 0) {
       ctx.beginPath();
       ctx.strokeStyle = '#00adef';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 5;
 
       results.torqueProfile.forEach((point, i) => {
         const x = padding + point.time * scaleX;
@@ -104,7 +104,7 @@ const MotionGraph: React.FC<MotionGraphProps> = ({ results, darkMode }) => {
     if (results.torqueProfile.length > 0) {
       ctx.beginPath();
       ctx.strokeStyle = '#f16366';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 5;
 
       results.torqueProfile.forEach((point, i) => {
         const x = padding + point.time * scaleX;
@@ -117,37 +117,37 @@ const MotionGraph: React.FC<MotionGraphProps> = ({ results, darkMode }) => {
 
     // Add legend
     const legendY = padding - 30;
-    ctx.font = '12px Arial';
+    ctx.font = '18px Arial';
     
     // Velocity legend
     ctx.strokeStyle = '#00adef';
     ctx.beginPath();
     ctx.moveTo(padding + 10, legendY);
-    ctx.lineTo(padding + 40, legendY);
+    ctx.lineTo(padding + 50, legendY);
     ctx.stroke();
     ctx.fillStyle = '#00adef';
-    ctx.fillText('Скорость [мм/с]', padding + 50, legendY + 4);
+    ctx.fillText('Скорость [мм/с]', padding + 60, legendY + 4);
 
     // Position legend
     ctx.strokeStyle = '#f16366';
     ctx.beginPath();
-    ctx.moveTo(padding + 180, legendY);
-    ctx.lineTo(padding + 210, legendY);
+    ctx.moveTo(padding + 220, legendY);
+    ctx.lineTo(padding + 260, legendY);
     ctx.stroke();
     ctx.fillStyle = '#f16366';
-    ctx.fillText('Перемещение [мм]', padding + 220, legendY + 4);
+    ctx.fillText('Перемещение [мм]', padding + 270, legendY + 4);
 
   }, [results, darkMode]);
 
   return (
-    <div className={`p-6 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
+    <div className={`p-6 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white shadow-md shadow-gray-500'} shadow-lg`}>
       <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
         Профиль перемещения
       </h3>
       <canvas
         ref={canvasRef}
-        width={800}
-        height={400}
+        width={1200}
+        height={600}
         className="w-full h-auto rounded-lg"
       />
     </div>

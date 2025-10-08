@@ -9,8 +9,6 @@ import mainLogo from '../logo.svg';
 import {Moon, Sun} from 'lucide-react';
 
 
-
-
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [params, setParams] = useLocalStorage<MotionParameters>('motionCalculatorParams', {
@@ -91,23 +89,7 @@ function App() {
             <h1 className={`text-4xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} border-left`}>     
                     Drive Calculation Tool (beta v.0.97)
             </h1>
-          </div>
-
-
-
-          
-          {/* 
-          <button
-            onClick={() => alert(cycleTest())}
-            className={`mt-4 px-4 py-2 rounded-lg transition-colors ${
-              darkMode 
-                ? 'bg-gray-700 text-white hover:bg-gray-600' 
-                : 'bg-white text-gray-800 hover:bg-gray-100'
-            }`}>
-            "Тестовая кнопка"
-          </button>
-          */}
-          
+          </div>       
           
 
           

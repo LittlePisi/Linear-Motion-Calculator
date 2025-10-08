@@ -92,7 +92,7 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     mod_lever,
     mod_GSLM,
     mod_Zd,
-    mod_pic
+    mod_maxAcc
   } = params;
 
 
@@ -362,7 +362,6 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     console.log({M_maxTorque});
     console.log({Mod_fullInertia});
     console.log({ScrewDLR});
-    console.log({Mf});
 
     console.log("Motor parameters:");
     console.log({selectedGBSetName});
@@ -400,6 +399,8 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     if (M_Fmax <= Fmax) throw new Error('Превышение допустимого усилия подачи для привода. Выберите больший типоразмер привода или шаг винта.');
     if (ScrewDLR > 0 && Np <= (maxRPM / reductionRatio)) throw new Error ('Превышение критической частоты вращения винта. Выберите больший типоразмер привода или больший шаг винта.')
     if (ScrewDLR > 0 && Fp <= Fmax) throw new Error ('Превышение безопасного усилия подачи для выбранной величины хода. Выберите больший типоразмер привода.')
+    if (ScrewDLR > 0 && Ld <= 500) throw new Error ('Слишком низкий срок службы ШВП. Выберите больший типоразмер привода или больший шаг винта.')
+    if (mod_maxAcc*1000 < Math.max(acceleration, deceleration)) throw new Error ('Превышение допустимого ускорения для выбранного привода. Выберите привод с большей постоянной подачи или шагом винта.')
     if (G_maxTorque <= (maxTorque * reductionRatio)) throw new Error('Превышение допустимого момента для редуктора. Выберите больший типоразмер или другое передаточное число.');
     if (M_slope <= (maxTorque)) throw new Error('Превышение максимального момента двигателя. Выберите больший типоразмер или измените другие параметры расчёта.');
     if (M_nom <= (meanTorque)) throw new Error('Превышение номинального момента двигателя. Выберите больший типоразмер или измените другие параметры расчёта.');

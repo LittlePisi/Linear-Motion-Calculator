@@ -214,8 +214,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
               <label className='font-semibold py-1'>Действителен при условии эксплуатации без ударов и вибраций,</label>
               <label className='font-semibold py-1'>попадании твердых частиц или жидкостей на механизм.</label>
               <label className='font-semibold py-1'>При наличии ударов и вибраций:</label>
-              <label className='font-semibold py-1'> - средней силы - умножь расчётное значение на 0.45 </label>
-              <label className='font-semibold py-1'> - большой силы - умножь расчётное значение на 0.25 </label>
+              <label className='font-semibold py-1'> - средней силы - умножить расчётное значение на 0.45 </label>
+              <label className='font-semibold py-1'> - большой силы - умножить расчётное значение на 0.25 </label>
             </div>
           </ReactTooltip>
 

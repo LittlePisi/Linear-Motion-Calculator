@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import * as ExcelJS from 'exceljs';
-import { Tooltip as ReactTooltip } from "react-tooltip";  
 
 export interface ParameterSet {
   name: string;
@@ -100,6 +99,7 @@ const LMComboBox: React.FC<LMComboBoxProps> = ({
   };
 
   return (
+    
     <div className='flex items-center gap-2'>
       <label htmlFor="lm-parameterSet" className={`block text-sm w-1/3 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
         Выбор привода
