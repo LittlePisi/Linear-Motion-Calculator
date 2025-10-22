@@ -159,7 +159,7 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
           </button>
             <ReactTooltip
                 id="my-tooltip-5"
-                place="right"
+                place="right-start"
                 clickable
                 style={{ 
                 backgroundColor: '#00adef', 
