@@ -183,9 +183,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
         </div>
       </div>
 
-      <div className="container hidden print:block mx-auto px-4 py-20">
-        
-      </div>
+
 
       {results && (
         <div className="space-y-8">
