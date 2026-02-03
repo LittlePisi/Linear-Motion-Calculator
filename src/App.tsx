@@ -7,6 +7,7 @@ import { MotionParameters, MotionResults } from './types';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import mainLogo from '../logo.svg';
 import {Moon, Sun} from 'lucide-react';
+import SolutionFinder from './components/AutomaticSolutionFinder'; 
 
 
 function App() {
@@ -82,19 +83,19 @@ function App() {
     }`}>
       <div className="container mx-auto px-4 py-8">
         <header className="text-center mb-12 print:hidden">
-          <img className="logo-picture" src={mainLogo} width="150" height="150" align='left' />
+          <a href='https://smarta.ru/'><img className="logo-picture" src={mainLogo} width="150" height="150" align='left' /></a>
           <br></br> 
           <br></br> 
           <div className="flex items-center justify-center gap-3 mb-4">                                       
-            <h1 className={`text-4xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} border-left`}>     
-                    Drive Calculation Tool (beta v.0.97)
+            <h1 className={`text-4xl font-bold pb-2 ${darkMode ? 'text-white' : 'text-gray-800'} border-left`}>     
+                    Drive Calculation Tool
             </h1>
           </div>       
           
 
           
           <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} max-w-2xl mx-auto`}>
-            Вычисляет профиль перемещения, требуемый момент и другие параметры систем линейного перемещения
+            
           </p>
           <button
             onClick={() => setDarkMode(!darkMode)}
@@ -107,8 +108,23 @@ function App() {
             {darkMode ? <Sun className="w-30 h-5 mx-1 text-yellow-400" /> : <Moon className="w-30 h-5 mx-1 text-slate-500 fill-slate-500" />}
             <span className="hidden sm:inline">{darkMode ? 'Светлое оформление' : 'Темное оформление'}</span>
           </button>
+
+{/* 
+          <button
+            onClick={() => console.log(callData(params))}
+            className={`flex items-center mx-auto mt-4 px-4 py-2 rounded-lg transition-colors ${
+              darkMode 
+                ? 'bg-gray-700 text-white hover:bg-gray-600' 
+                : 'bg-white text-gray-800 hover:bg-gray-100 shadow-md shadow-gray-500'
+            }`}
+          >
+            
+            <span className="hidden sm:inline">Тестовая кнопка</span>
+          </button>
+*/}
+
         </header>
-        
+
         
         <div className="grid lg:grid-cols-3 gap-8">
           
@@ -121,6 +137,8 @@ function App() {
           </div>
           
           <div className="lg:col-span-2">
+            <SolutionFinder props={params} darkMode={darkMode}/>
+
             <ResultsDisplay 
               results={results} 
               error={error}
@@ -141,8 +159,9 @@ function App() {
               Справка
             </h2>
           </div>
-           
-          <p>• Вычисляет профиль перемещения и требуемый крутящий момент на основе введенных параметров.</p>
+          <p>• Drive Calculation Tool - инструмент для расчёта систем линейного перемещения. Версия: v0.98.</p>
+          <p>• Расчитывает оптимальные комбинации линейного привода, двигателя и редуктора на основе введенных параметров.</p>
+          <p>• Вычисляет профиль перемещения и требуемый крутящий момент на основе введенных параметров и выбранной конфигурации компонентов.</p>
           <p>• Автоматически учитывает характеристики выбранного привода, редуктора и двигателя при вычислении.</p>
           <p>• Расчитывает как вертикальные, так и горизонтальные применения. Для переключения между режимами предусмотрена кнопка со стрелкой.</p>
           <p>• Расчет может проводиться как от общего времени перемещения, так и от максимальной скорости. Для переключения между режимами предусмотрена кнопка.</p>

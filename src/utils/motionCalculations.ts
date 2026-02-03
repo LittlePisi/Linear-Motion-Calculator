@@ -362,6 +362,7 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     console.log({M_maxTorque});
     console.log({Mod_fullInertia});
     console.log({ScrewDLR});
+    console.log({M_Fmax});
 
     console.log("Motor parameters:");
     console.log({selectedGBSetName});
@@ -393,7 +394,6 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     const k = (M_max - 0) / (N_max - N_d);
     const a = (0 + k * N_max) / M_max;
     const M_slope = maxRPM > N_d ? (a * M_max - k * maxRPM) : M_max; 
-    
 
   // Overload/overspeed error handling 
     if (M_Fmax <= Fmax) throw new Error('Превышение допустимого усилия подачи для привода. Выберите больший типоразмер привода или шаг винта.');

@@ -74,6 +74,8 @@ const LMComboBox: React.FC<LMComboBoxProps> = ({
         });
 
         setParameterSets(data);
+        console.log("LinearModule.xlsx data:")
+        console.log({parameterSets});
 
         if (data.length > 0) {
           // Ensure a valid default and notify parent immediately
@@ -122,7 +124,7 @@ const LMComboBox: React.FC<LMComboBoxProps> = ({
         ))}
       </select>
     </div>
-
+    
     </div>
   );
 };

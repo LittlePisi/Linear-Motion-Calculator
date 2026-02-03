@@ -95,6 +95,8 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
       N_fp: toNum(sel.N_fp),
       N_d: toNum(sel.N_d),
       mot_pic: sel.mot_pic,
+      mot_flangeSize: toNum(sel.mot_flangeSize),
+      mot_wBrake: toNum(sel.mot_wBrake),
     }));
   };
 
@@ -140,7 +142,7 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
       <div className="flex flex-col gap-4 mb-4">
         <div className="flex items-center justify-between">
           <h2 className={`text-xl pb-2 font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-            Ввод параметров
+            Расчётные параметры
           </h2>
         </div>
       </div>
@@ -159,19 +161,19 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
           </button>
             <ReactTooltip
                 id="my-tooltip-5"
-                place="right"
+                place="right-start"
                 clickable
                 style={{ 
                 backgroundColor: '#00adef', 
                 color: '#222', 
                 padding: '1px', 
                 margin: '0px',
-                borderRadius: '6px' 
-                
+                borderRadius: '6px',
+                zIndex: 100,
                 }}               
                 opacity={1}
           >
-            <div className={`flex flex-col gap-1 rounded-md p-2 mb-0 ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white shadow-md shadow-gray-500 text-gray-700'}`}>
+            <div className={`flex z-50 flex-col gap-1 rounded-md p-2 mb-0 ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white shadow-md shadow-gray-500 text-gray-700'}`}>
               <label className='font-extrabold py-1'>Ориентация расчётного перемещения</label>
               <label className='font-semibold'>Изменяет ориентацию расчётного перемещения.</label>
               <label className='font-semibold'>Указывает выбранную в данный момент ориентацию.</label>
@@ -199,7 +201,7 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
 
             <ReactTooltip
                 id="my-tooltip-6"
-                place="right"
+                place="right-start"
                 clickable
                 style={{ 
                 backgroundColor: '#00adef', 
@@ -221,112 +223,7 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
           </ReactTooltip>
         </div>
 
-        {/* Linear Module */}
-        <div data-tooltip-id="my-tooltip-2">
-          <LMComboBox
-            onSelectSet={handleLMSelect}
-            darkMode={darkMode}
-            selectedSetName={params.selectedLMSetName}
-            setSelectedSetName={(name) => setParams(prev => ({ ...prev, selectedLMSetName: name }))}
-          />
 
-          <ReactTooltip
-                id="my-tooltip-2"
-                place="right"
-                clickable
-                style={{ 
-                backgroundColor: '#00adef', 
-                color: '#222', 
-                padding: '1px', 
-                margin: '0px',
-                borderRadius: '6px' 
-                
-                }}               
-                opacity={1}
-          >
-            <div className={`flex flex-col gap-1 rounded-md p-2 mb-0 ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white shadow-md shadow-gray-500 text-gray-700'}`}>
-              <label className='font-extrabold py-1'>Технические характеристики</label>
-              <label className='font-semibold'>Модель привода: {params.selectedLMSetName}</label>
-              <label className='font-semibold'>Постоянная подачи: {params.lead} мм/об</label>
-              <label className='font-semibold'>Макс. усилие: {( params.M_maxTorque / ( ( params.lead / 1000 ) / ( 2 * 3.14 ) ) ).toFixed(0)} Н</label>
-              <label className='font-semibold'>Макс. скорость: {params.mod_maxSpeed} м/с</label>
-              <label className='font-semibold'>Макс. ускорение: {params.mod_maxAcc} м/с²</label>
-              <img className="picture place-self-center" src={params.mod_pic} width="200" height="200"/>
-            </div>
-          </ReactTooltip>
-        </div>
-
-        {/* Gearbox */}
-        <div data-tooltip-id="my-tooltip-4">
-          <GBComboBox
-            onSelectSet={handleGBSelect}
-            darkMode={darkMode}
-            selectedGBSetName={params.selectedGBSetName}
-            setSelectedSetName={(name) => setParams(prev => ({ ...prev, selectedGBSetName: name }))}
-          />
-
-            <ReactTooltip
-                id="my-tooltip-4"
-                place="right"
-                clickable
-                style={{ 
-                backgroundColor: '#00adef', 
-                color: '#222', 
-                padding: '1px', 
-                margin: '0px',
-                borderRadius: '6px' 
-                
-                }}               
-                opacity={params.G_eff < 1 ? 1 : 0}
-            >
-            <div className={`flex flex-col gap-1 rounded-md p-2 mb-0 ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white shadow-md shadow-gray-500 text-gray-700'}`}>
-              <label className='font-extrabold py-1'>Технические характеристики</label>
-              <label className='font-semibold'>Модель редуктора: {params.selectedGBSetName}</label>
-              <label className='font-semibold'>Передаточное число: {params.reductionRatio}</label>
-              <label className='font-semibold'>Макс. момент: {params.G_maxTorque} Н⋅м</label>
-              <label className='font-semibold'>Макс. скорость: 3000 об/мин</label>
-              <label className='font-semibold'>КПД: {params.G_eff * 100} %</label>
-              <img className="picture place-self-center" src={'https://i.postimg.cc/7LpTGqws/gearbox.png'} width="150" height="150"/>
-            </div>
-          </ReactTooltip>
-          
-        </div>
-
-        {/* Motor */}
-        <div data-tooltip-id="my-tooltip-3">
-          <MTComboBox
-            onSelectSet={handleMTSelect}
-            darkMode={darkMode}
-            selectedMTSetName={params.selectedMTSetName}
-            setSelectedSetName={(name) => setParams(prev => ({ ...prev, selectedMTSetName: name }))}
-          />
-
-          <ReactTooltip
-                id="my-tooltip-3"
-                place="right"
-                clickable
-                style={{ 
-                backgroundColor: '#00adef', 
-                color: '#222', 
-                padding: '1px', 
-                margin: '0px',
-                borderRadius: '6px' 
-                
-                }}               
-                opacity={1}
-                
-          >
-          <div className={`flex flex-col gap-1 rounded-md p-2 mb-0 ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white shadow-md shadow-gray-500 text-gray-700'}`}>
-              <label className='font-extrabold py-1'>Технические характеристики</label>
-              <label className='font-semibold'>Модель двигателя: {params.selectedMTSetName}</label>
-              <label className='font-semibold'>Номинальный момент: {params.M_nom} Н⋅м</label>
-              <label className='font-semibold'>Номинальная скорость: {params.N_nom} об/мин</label>
-              <label className='font-semibold'>Пиковый момент: {params.M_max} Н⋅м</label>
-              <label className='font-semibold'>Пиковая скорость: {params.N_max} об/мин</label>
-              <img className="picture place-self-center" src={params.mot_pic} width="200" height="200"/>
-            </div>
-          </ReactTooltip>
-        </div>
 
         {(params.useMaxSpeedMode ? maxSpeedParameters : travelTimeParameters).map(({ label, key, unit, step, min }) => (
           <div key={key} className="flex items-center gap-2">
@@ -444,10 +341,127 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
           ))}
         </div>
       </div>
-  
+      <div className="flex flex-col gap-4 mb-4">
+        <div className="flex items-center justify-between">
+          <h2 className={`text-xl pb-2 font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+            Расчётная конфигурация 
+          </h2>
+        </div>
+      </div>
+              {/* Linear Module */}
+        <div data-tooltip-id="my-tooltip-2">
+          <LMComboBox
+            onSelectSet={handleLMSelect}
+            darkMode={darkMode}
+            selectedSetName={params.selectedLMSetName}
+            setSelectedSetName={(name) => setParams(prev => ({ ...prev, selectedLMSetName: name }))}
+          />
+
+          <ReactTooltip
+                id="my-tooltip-2"
+                place="right-start"
+                clickable
+                style={{ 
+                backgroundColor: '#00adef', 
+                color: '#222', 
+                padding: '1px', 
+                margin: '0px',
+                borderRadius: '6px' 
+                
+                }}               
+                opacity={1}
+          >
+            <div className={`flex flex-col gap-1 rounded-md p-2 mb-0 ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white shadow-md shadow-gray-500 text-gray-700'}`}>
+              <label className='font-extrabold py-1'>Технические характеристики</label>
+              <label className='font-semibold'>Модель привода: {params.selectedLMSetName}</label>
+              <label className='font-semibold'>Постоянная подачи: {params.lead} мм/об</label>
+              <label className='font-semibold'>Макс. усилие: {( params.M_maxTorque / ( ( params.lead / 1000 ) / ( 2 * 3.14 ) ) ).toFixed(0)} Н</label>
+              <label className='font-semibold'>Макс. скорость: {params.mod_maxSpeed} м/с</label>
+              <label className='font-semibold'>Макс. ускорение: {params.mod_maxAcc} м/с²</label>
+              <img className="picture place-self-center" src={params.mod_pic} width="200" height="200"/>
+            </div>
+          </ReactTooltip>
+        </div>
+
+        {/* Gearbox */}
+        <div data-tooltip-id="my-tooltip-4">
+          <GBComboBox
+            onSelectSet={handleGBSelect}
+            darkMode={darkMode}
+            selectedGBSetName={params.selectedGBSetName}
+            setSelectedSetName={(name) => setParams(prev => ({ ...prev, selectedGBSetName: name }))}
+          />
+
+            <ReactTooltip
+                id="my-tooltip-4"
+                place="right-start"
+                clickable
+                style={{ 
+                backgroundColor: '#00adef', 
+                color: '#222', 
+                padding: '1px', 
+                margin: '0px',
+                borderRadius: '6px' 
+                
+                }}               
+                opacity={params.G_eff < 1 ? 1 : 0}
+            >
+            <div className={`flex flex-col gap-1 rounded-md p-2 mb-0 ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white shadow-md shadow-gray-500 text-gray-700'}`}>
+              <label className='font-extrabold py-1'>Технические характеристики</label>
+              <label className='font-semibold'>Модель редуктора: {params.selectedGBSetName}</label>
+              <label className='font-semibold'>Передаточное число: {params.reductionRatio}</label>
+              <label className='font-semibold'>Макс. момент: {params.G_maxTorque} Н⋅м</label>
+              <label className='font-semibold'>Макс. скорость: 3000 об/мин</label>
+              <label className='font-semibold'>КПД: {params.G_eff * 100} %</label>
+              <img className="picture place-self-center" src={'https://i.postimg.cc/7LpTGqws/gearbox.png'} width="150" height="150"/>
+            </div>
+          </ReactTooltip>
+          
+        </div>
+
+        {/* Motor */}
+        <div data-tooltip-id="my-tooltip-3">
+          <MTComboBox
+            onSelectSet={handleMTSelect}
+            darkMode={darkMode}
+            selectedMTSetName={params.selectedMTSetName}
+            setSelectedSetName={(name) => setParams(prev => ({ ...prev, selectedMTSetName: name }))}
+          />
+
+          <ReactTooltip
+                id="my-tooltip-3"
+                place="right-start"
+                clickable
+                style={{ 
+                backgroundColor: '#00adef', 
+                color: '#222', 
+                padding: '1px', 
+                margin: '0px',
+                borderRadius: '6px' 
+                
+                }}               
+                opacity={1}
+                
+          >
+          <div className={`flex flex-col gap-1 rounded-md p-2 mb-0 ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white shadow-md shadow-gray-500 text-gray-700'}`}>
+              <label className='font-extrabold py-1'>Технические характеристики</label>
+              <label className='font-semibold'>Модель двигателя: {params.selectedMTSetName}</label>
+              <label className='font-semibold'>Квадрат фланца двигателя: {params.mot_flangeSize} x {params.mot_flangeSize} мм</label>
+              <label className='font-semibold'>Номинальный момент: {params.M_nom} Н⋅м</label>
+              <label className='font-semibold'>Номинальная скорость: {params.N_nom} об/мин</label>
+              <label className='font-semibold'>Пиковый момент: {params.M_max} Н⋅м</label>
+              <label className='font-semibold'>Пиковая скорость: {params.N_max} об/мин</label>
+              <label className='font-semibold'>{Number(params.mot_wBrake) < 1 ? "Стояночный тормоз: Нет ": "Стояночный тормоз: Есть"}</label>
+              <img className="picture place-self-center" src={params.mot_pic} width="200" height="200"/>
+            </div>
+          </ReactTooltip>
+        </div>
+
 
       </div>
+      
     </div>
+    
   );
 };
 

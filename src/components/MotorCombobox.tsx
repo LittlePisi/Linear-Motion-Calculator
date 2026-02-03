@@ -13,6 +13,8 @@ export interface MTParameterSet {
   N_fp: string;
   N_d: string;
   mot_pic: string;
+  mot_flangeSize: string;
+  mot_wBrake: string;
 }
 
 interface MTComboBoxProps {
@@ -54,6 +56,8 @@ const MTComboBox: React.FC<MTComboBoxProps> = ({
               N_fp: row.getCell(9).text,
               N_d: row.getCell(10).text,
               mot_pic: row.getCell(11).text,
+              mot_flangeSize: row.getCell(12).text,
+              mot_wBrake: row.getCell(13).text,
             });
           }
         });

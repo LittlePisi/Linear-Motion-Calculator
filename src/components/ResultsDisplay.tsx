@@ -4,17 +4,19 @@ import MotionGraph from './MotionGraph';
 import MotorGraph from './MotorGraph';
 import { Info } from 'lucide-react';
 import { Tooltip as ReactTooltip } from "react-tooltip";    
+import { MotionParameters } from '../types';
 
 interface ResultsDisplayProps {
   results: MotionResults | null;
   error: string;
   darkMode: boolean;
+  params: MotionParameters;
 }
 
-const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMode }) => {
+const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMode, params }) => {
   if (error) {
     return (
-      <div className={`p-6 rounded-xl  outline outline-2 outline-offset-0 outline-red-500 ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-lg`}>
+      <div className={`p-6 rounded-xl  outline outline-2 outline-offset-0 outline-red-500 ${darkMode ? 'bg-gray-800' : 'bg-white shadow-md shadow-gray-500'} `}>
         <p className={`text-xl  font-semibold ${darkMode ? 'text-red-500' : 'text-red-500'}`}>Ошибка:</p>
         <p className={`text-md font-semibold ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{error}</p>
       </div>
@@ -82,7 +84,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
             </p>
           </div>
           
-          {results.GB_loadRatio > 0.001 && (
+          {results.GB_loadRatio > 0.01 && (
             <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} ${results.GB_loadRatio > 90 ? darkMode ? 'bg-red-900' : 'bg-red-300' : ''}`}>
               <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Загрузка редуктора</p>
               <p className={`text-lg font-semibold ${results.GB_loadRatio > 90 ? 'text-red-600' : darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
@@ -183,9 +185,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
         </div>
       </div>
 
-      <div className="container hidden print:block mx-auto px-4 py-20">
-        
-      </div>
 
       {results && (
         <div className="space-y-8">
@@ -214,8 +213,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
               <label className='font-semibold py-1'>Действителен при условии эксплуатации без ударов и вибраций,</label>
               <label className='font-semibold py-1'>попадании твердых частиц или жидкостей на механизм.</label>
               <label className='font-semibold py-1'>При наличии ударов и вибраций:</label>
-              <label className='font-semibold py-1'> - средней силы - умножить расчётное значение ресурса на 0.45 </label>
-              <label className='font-semibold py-1'> - большой силы - умножить расчётное значение ресурса на 0.25 </label>
+              <label className='font-semibold py-1'> - средней силы - умножить расчётное значение на 0.45 </label>
+              <label className='font-semibold py-1'> - большой силы - умножить расчётное значение на 0.25 </label>
             </div>
           </ReactTooltip>
 

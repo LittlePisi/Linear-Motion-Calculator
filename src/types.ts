@@ -57,6 +57,8 @@ export interface MotionParameters {
   mot_pic: string;
   mod_maxSpeed: number,
   mod_maxAcc: number,
+  mot_flangeSize: number;
+  mot_wBrake: number;
 }
 
 export interface MotionResults {
@@ -109,3 +111,4 @@ export interface TorquePoint {
   position: number;
   velocity: number;
 }
+
