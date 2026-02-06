@@ -36,7 +36,11 @@ export interface LMParameterSet {
   mod_wGearbox: string;
   mod_GBtype: string;
   calc_loadInertia?: string;
-  suitableMotors?: { motorName: string; ratio: number; motorPic: string; inertiaRatio: string; mNom: number; motorLoad: string }[];
+  calc_meanTorque: string;
+  calc_meanRPM: string;
+  mod_GB_idleTorque: string;
+  mod_GB_inertia: string;
+  suitableMotors?: { motorName: string; ratio: number; motorPic: string; inertiaRatio: string; mNom: number; motorLoad: string, mot_GBtype: string, motorMeanLoad: string }[];
 }
 
 export interface MTParameterSet {
@@ -103,6 +107,10 @@ export async function getLMData() {
         mod_motSize: row.getCell(23).text,
         mod_wGearbox: row.getCell(24).text,
         mod_GBtype: row.getCell(25).text,
+        calc_meanTorque: row.getCell(26).text,
+        calc_meanRPM: row.getCell(27).text,
+        mod_GB_idleTorque: row.getCell(28).text,
+        mod_GB_inertia: row.getCell(29).text,
       });
     }
   });
@@ -280,19 +288,51 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
   //      console.log({v1});
 
         const calculateModuleTorque = (M_zsInertia: number, M_pmInertia: number, M_idleTorque: number, lead: number, isVertical: boolean) => {
+
+
+          // Calculating mean and max RPM
+          const maxRPM = (v1 / 1000 * 60 ) / (lead / 1000);
+          const meanRPM = (2 * maxRPM) / 3;
+
           const Mod_fullInertia = Number(M_zsInertia) + (Number(M_pmInertia) * stroke/1000);
+
           const loadInertia = (mass * Math.pow((lead / 1000) / (2 * Math.PI), 2) + Mod_fullInertia);
+
+          // Calculate constant torques
           const externalTorque = ((externalForce * ((lead/1000) / (2 * Math.PI))) );
+
           const gravityTorque = isVertical
                   ? ((mass * GRAVITY * ((lead/1000) / (2 * Math.PI))))
                   : 0;
+
           const constantLoadTorque = externalTorque + gravityTorque + M_idleTorque;
-          const maxRPM = (v1 / 1000 * 60 ) / (lead / 1000);
+
+          // Calculate dynamic torques for each phase
           const dynamicTorqueA = (loadInertia) * ((Math.PI * maxRPM)/(30 * t1));
+      
+          const dynamicTorqueD = (loadInertia) * ((Math.PI * maxRPM)/(30 * t3));
+
+          // Calculate total torques for each phase
+          const accelerationTorque = (((dynamicTorqueA + constantLoadTorque)) / 0.95);
+          
+          const constantVelocityTorque = (((constantLoadTorque)) / 0.95);
+          
+          const decelerationTorque = (((dynamicTorqueD - constantLoadTorque)) / 0.95);
+          
+
+          // Calculating mean torque
+          const meanTorque = isVertical
+            ? Math.sqrt( ((Math.pow(accelerationTorque, 2) * t1) + (Math.pow(constantVelocityTorque, 2) * t2) + (Math.pow(decelerationTorque, 2) * t3)) / totalTime) 
+            : Math.sqrt( ((Math.pow(accelerationTorque, 2) * t1) + (Math.pow(constantVelocityTorque, 2) * t2) + (Math.pow(decelerationTorque, 2) * t3)) / totalTime);
+
+          // Calculating max torque
           const maxTorque = (dynamicTorqueA + constantLoadTorque);
-          return { maxTorque, loadInertia };
+          
+          return { maxTorque, loadInertia, meanTorque, meanRPM, maxRPM};
         }
 
+
+        // Function for calculating linear module service life (guide service life for modules with guide / ballscrew service life for cylinders) 
         const calculateServiceLife = (mod_Mx: number, mod_My: number, mod_Mz: number, mod_Zd: number, mod_lever: number, mod_GSLM: number, ScrewDLR: number, lead: number) => {
           
           let mod_guideServiceLife: number = 1000;
@@ -353,35 +393,49 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
           ;
         }
 
+        // Filtering linear modules based on torque and service life requirements
+
         const filtered = lmData.filter((module) => {
           const { maxTorque } = calculateModuleTorque(Number(module.M_zsInertia), Number(module.M_pmInertia), Number(module.M_idleTorque), Number(module.lead), isVertical);
           const serviceLife = calculateServiceLife(Number(module.mod_Mx), Number(module.mod_My), Number(module.mod_Mz), Number(module.mod_Zd), Number(module.mod_lever), Number(module.mod_GSLM), Number(module.ScrewDLR), Number(module.lead));
           return (
             Number(module.mod_maxSpeed) > v1/1000 &&
             Number(module.mod_maxAcc) > Math.max(acceleration/1000, deceleration/1000) &&
-            ((Number(module.M_maxTorque) - Number(module.M_idleTorque)) * 0.10) < maxTorque &&
+            ((Number(module.M_maxTorque) - Number(module.M_idleTorque)) * 0.08) < maxTorque &&
             ((Number(module.M_maxTorque) - Number(module.M_idleTorque)) * 0.85) > maxTorque &&
             serviceLife > 1500
           );
         });
 
-        
+        // Calculating Service Life, Torques, RPMs and Load Inertia for each filtered module
+
         filtered.forEach((module) => {
-          const { maxTorque, loadInertia } = calculateModuleTorque(Number(module.M_zsInertia), Number(module.M_pmInertia), Number(module.M_idleTorque), Number(module.lead), isVertical);
+          const { maxTorque, loadInertia, meanTorque, meanRPM } = calculateModuleTorque(Number(module.M_zsInertia), Number(module.M_pmInertia), Number(module.M_idleTorque), Number(module.lead), isVertical);
           module.calc_GSL = String(calculateServiceLife(Number(module.mod_Mx), Number(module.mod_My), Number(module.mod_Mz), Number(module.mod_Zd), Number(module.mod_lever), Number(module.mod_GSLM), Number(module.ScrewDLR), Number(module.lead)));
           module.calc_maxTorque = String(maxTorque);
           module.calc_loadInertia = String(loadInertia);
+          module.calc_meanTorque = String(meanTorque);
+          module.calc_meanRPM = String(meanRPM);
         });
+
+        // Scaling max linear speed for each filtered module from mm/s to m/s
 
         filtered.forEach((module) => {
           module.calc_maxSpeed = String(v1 / 1000);
         });
         
+
+        // Declaring reduction ratios for sorting algorithm
+
         const reductionRatios = [ 3, 5, 7, 10];
 
+        // Sorting suitable motors for each module based on calculated data and reduction ratios (reduction ratios are used based on mod_wGearbox value) 
+
         filtered.forEach((module) => {
-          const allSuitable: { motorName: string; ratio: number; motorPic: string; inertiaRatio: string; mNom: number; motorLoad: string, mot_GBtype: string }[] = [];
+          const allSuitable: { motorName: string; ratio: number; motorPic: string; inertiaRatio: string; mNom: number; motorLoad: string, mot_GBtype: string, motorMeanLoad: string }[] = [];
           const requiredTorque = Number(module.calc_maxTorque);
+          const mod_meanTorque = Number(module.calc_meanTorque);
+          const mod_meanRPM = Number(module.calc_meanRPM);
           
           motData.forEach((motor) => {
 
@@ -391,10 +445,15 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
                 const requiredRPM = Number(module.calc_maxSpeed) * 60000 / Number(module.lead);
                 const inertiaRatioNum = 1 + (Number(module.calc_loadInertia) / (ratio ** 2) / (Number(motor.motorRotorInertia) / 10000));
                 const scaledTorque = Number(motor.M_nom) * ratio;
+                const scaledMaxTorque = Number(motor.M_max) * ratio;
+                const scaledMeanTorque = Number(mod_meanTorque) / ratio;
+                const scaledMeanRpm = Number(mod_meanRPM) * ratio;
 
                 if (
-                  scaledTorque > requiredTorque &&
+                  scaledTorque > mod_meanTorque &&
+                  scaledMaxTorque > requiredTorque &&
                   Number(motor.N_nom) / ratio > requiredRPM &&
+                  ((((scaledMeanTorque + Number(module.mod_GB_idleTorque)) / Number(motor.M_nom)))*100) < 95 &&
                   inertiaRatioNum <= 12 &&
                   module.mod_motSize.split(',').map(s => s.trim()).includes(motor.mot_flangeSize) 
                 ) {
@@ -405,7 +464,9 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
                   if (!isVertical && hasBrake) return;     // не нужен → есть → пропустить
 
                   const appTorque = requiredTorque / ratio;
-                  const motorLoad = ((appTorque / Number(motor.M_nom))*100).toFixed(1);
+                  const motorLoad = ((appTorque / Number(motor.M_max))*100).toFixed(1);
+                  const motorMeanLoad = ((((scaledMeanTorque + Number(module.mod_GB_idleTorque)) / Number(motor.M_nom)))*100).toFixed(1);
+
                   allSuitable.push({
                     motorName: motor.name,
                     ratio,
@@ -413,6 +474,7 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
                     inertiaRatio: inertiaRatioNum.toFixed(2),
                     mNom: Number(motor.M_nom),
                     motorLoad,
+                    motorMeanLoad,
                     mot_GBtype: motor.mot_GBtype,
                   });                          
                 }
@@ -423,10 +485,15 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
               const requiredRPM = Number(module.calc_maxSpeed) * 60000 / Number(module.lead);
               const inertiaRatioNum = 1 + (Number(module.calc_loadInertia) / (ratio ** 2) / (Number(motor.motorRotorInertia) / 10000));
               const scaledTorque = Number(motor.M_nom) * ratio;
+              const scaledMaxTorque = Number(motor.M_max) * ratio;
+              const scaledMeanTorque = Number(mod_meanTorque) / ratio;
+              const scaledMeanRpm = Number(mod_meanRPM) * ratio;
 
               if (
-                scaledTorque > requiredTorque &&
+                scaledTorque > mod_meanTorque &&
+                scaledMaxTorque > requiredTorque &&
                 Number(motor.N_nom) / ratio > requiredRPM &&
+                ((((scaledMeanTorque + Number(module.mod_GB_idleTorque)) / Number(motor.M_nom)))*100) < 95 &&
                 inertiaRatioNum <= 12 &&
                 module.mod_motSize.split(',').map(s => s.trim()).includes(motor.mot_flangeSize)
               ) {
@@ -437,7 +504,9 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
                 if (!isVertical && hasBrake) return;     // не нужен → есть → пропустить
 
                 const appTorque = requiredTorque / ratio;
-                const motorLoad = ((appTorque / Number(motor.M_nom))*100).toFixed(1);
+                const motorLoad = ((appTorque / Number(motor.M_max))*100).toFixed(1);
+                const motorMeanLoad = ((((scaledMeanTorque + Number(module.mod_GB_idleTorque)) / Number(motor.M_nom)))*100).toFixed(1);
+
                 allSuitable.push({
                   motorName: motor.name,
                   ratio,
@@ -445,6 +514,7 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
                   inertiaRatio: inertiaRatioNum.toFixed(2),
                   mNom: Number(motor.M_nom),
                   motorLoad,
+                  motorMeanLoad,
                   mot_GBtype: motor.mot_GBtype,
                 });
 
@@ -455,21 +525,21 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
           });
 
           // Select best 3-5: group by motor, take max ratio per motor, sort by ascending (mNom * ratio / requiredTorque) for well-loaded (minimal excess)
-          const suitableMap = new Map<string, { motorName: string; ratio: number; motorPic: string; inertiaRatio: string; mNom: number; motorLoad: string }>();
+          const suitableMap = new Map<string, { motorName: string; ratio: number; motorPic: string; inertiaRatio: string; mNom: number; motorLoad: string, motorMeanLoad: string, mot_GBtype: string }>();
           allSuitable.forEach((pair) => {
             const key = pair.motorName;
-            const currentLoad = parseFloat(pair.motorLoad);
+            const currentLoad = parseFloat(pair.motorMeanLoad);
             const existing = suitableMap.get(key);
             
-            if (!existing || currentLoad > parseFloat(existing.motorLoad)) {
+            if (!existing || currentLoad > parseFloat(existing.motorMeanLoad)) {
               suitableMap.set(key, pair);
             }
           });
 
           const bestPairs = Array.from(suitableMap.values())
             .sort((a, b) => {
-              const loadA = parseFloat(a.motorLoad); // уже в процентах, например "75.3"
-              const loadB = parseFloat(b.motorLoad);
+              const loadA = parseFloat(a.motorMeanLoad); // уже в процентах, например "75.3"
+              const loadB = parseFloat(b.motorMeanLoad);
               return loadB - loadA; // по убыванию: сначала самые загруженные
             })
             .slice(0, 5);
@@ -539,7 +609,10 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
               aria-expanded={isOpenRec}
           >
           <span className={`text-xl pb-2 font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>Рекомендуемые комбинации ({filteredLMData.length}):</span>
-          <svg className={`h-5 w-5 transform transition-transform duration-300 ${ isOpenRec ? 'rotate-180' : 'rotate-0'}`}
+          <svg className={`h-5 w-5 transform transition-transform duration-300 
+              ${ isOpenRec ? 'rotate-180' : 'rotate-0'}
+              ${darkMode ? 'text-white' : 'text-gray-800'}
+          `}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -552,9 +625,9 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
           className={`overflow-hidden transition-all duration-700 delay-100 ease-in-out ${
           isOpenRec ? 'opacity-100' : 'max-h-0 opacity-0'}`}>
 
-          <h3 className={`grid grid-cols-2 gap-0 pb-3 text-base font-semibold items-center ${darkMode ? 'text-white' : 'text-gray-800'} overflow-hidden transition-all duration-300 ease-in-out`}>Сортировка по типу привода
+          <h3 className={`grid grid-cols-2 gap-0 pb-3 text-base font-semibold items-center ${darkMode ? 'text-gray-300' : 'text-gray-700'} overflow-hidden transition-all duration-300 ease-in-out`}>Сортировка по типу привода
               <div>
-                  <ul className={`items-center w-full text-sm font-medium rounded-lg sm:flex ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600'}`}>
+                  <ul className={`items-center w-full text-sm font-medium rounded-lg sm:flex ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
                       <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                           <div className="flex items-center ps-3">
                               <input 
@@ -562,7 +635,7 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
                                   type="radio" 
                                   value="Belt" 
                                   name="list-radio" 
-                                  className="w-7 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                                  className="w-7 h-4 text-blue-600 bg-gray-100 border-gray-300  focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
                                   onChange={() => setModuleType('Belt')}
                                   />
                               <label htmlFor="horizontal-list-radio-license" className="w-full py-3 ms-2 text-base font-medium">Ременный</label>
@@ -614,11 +687,11 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
               <div className={`flex-auto inline-grid grid-flow-col auto-cols-max gap-2 }`}>
                   {filteredLMData.length > 0 ? (
                       filteredLMData.map((item, index) => (
-                      <div key={index} className={`flex flex-col min-w-[182px] gap-1 p-6 rounded-xl ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600'}`}>
+                      <div key={index} className={`flex flex-col min-w-[182px] gap-1 p-6 rounded-xl ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
                           <label className='font-semibold'>{index+1}. {item.name}</label>
                           <div className='h-20'><img className='py-3' src={item.mod_pic} width="100" height="100"/></div>
-                          <label className='text-base'>Ресурс: {Number(item.calc_GSL) > 10000 ? ("10000+") : (Number(item.calc_GSL).toFixed(0))} км</label>
-                          <label className=''>Загрузка: {(((Number(item.calc_maxTorque) - (Number(item.M_idleTorque))) / Number(item.M_maxTorque))*100).toFixed(0)} %</label>
+                          <label className='text-base'><span className='font-semibold'>Ресурс:</span> {Number(item.calc_GSL) > 10000 ? ("10000+") : (Number(item.calc_GSL).toFixed(0))} км</label>
+                          <label className=''><span className='font-semibold'>Загрузка:</span> {(((Number(item.calc_maxTorque) - (Number(item.M_idleTorque))) / Number(item.M_maxTorque))*100).toFixed(0)} %</label>
                           {item.suitableMotors && item.suitableMotors.length > 0 && (
 
                           <div className="mt-2 transition-all duration-300 ease-in-out">
@@ -633,7 +706,9 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
                               <svg
                               className={`h-5 w-5 transform transition-transform duration-300 ${
                                   isOpen ? 'rotate-180' : 'rotate-0'
-                              }`}
+                              }
+                                  ${darkMode ? 'text-white' : 'text-gray-800'}
+                              `}
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
@@ -648,16 +723,17 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
                               isOpen ? 'max-h-120 opacity-100' : 'max-h-0 opacity-0'
                               }`}
                           >
-                              <div className={`text-sm  rounded-lg p-1 mt-1 ${darkMode ? 'text-white bg-gray-600' : 'text-gray-600 bg-white'} `}>
+                              <div className={`text-sm  rounded-lg p-1 mt-1 ${darkMode ? 'text-gray-300 bg-gray-600' : 'text-gray-700 bg-white'} `}>
                               {item.suitableMotors.map((sm, si) => (
-                                  <div key={si} className="flex items-center gap-1 p-0.5 pt-3">
+                                  <div key={si} className="flex items-center gap-1 mr-1 mb-1 p-0.5 pt-3">
                                     {si + 1}.
                                     <img src={sm.motorPic} width="50" height="50" className="mr-2" alt={sm.motorName} />
                                     <div className='flex flex-col gap-1'> 
-                                      <label>Двигатель: {sm.motorName}</label>
-                                      {Number(item.mod_wGearbox) > 0 ? <label>Редуктор: {item.mod_GBtype}{sm.ratio}S1-{sm.mot_GBtype} </label> : ""}
-                                      <label>Загрузка двигателя: {sm.motorLoad}+%</label>
-                                      <label>Соотношение моментов инерции: {sm.inertiaRatio}+</label>
+                                      <label><span className='font-semibold'>Двигатель:</span> {sm.motorName}</label>
+                                      {Number(item.mod_wGearbox) > 0 ? <label><span className='font-semibold'>Редуктор:</span> {item.mod_GBtype}{sm.ratio}S1-{sm.mot_GBtype} </label> : ""}
+                                      {/*<label>Загрузка двигателя макс.: {sm.motorLoad}%</label>*/}
+                                      <label><span className='font-semibold'>Загрузка двигателя:</span> {sm.motorMeanLoad}%</label> 
+                                      <label><span className='font-semibold'>Соотношение моментов инерции:</span> {sm.inertiaRatio}</label>
 
                                     </div>
                                   </div>

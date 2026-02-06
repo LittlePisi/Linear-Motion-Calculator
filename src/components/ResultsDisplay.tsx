@@ -209,7 +209,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, error, darkMod
                 opacity={1}
           >
             <div className={`flex flex-col gap-1 rounded-md p-2 mb-0 ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white shadow-md shadow-gray-500 text-gray-700'}`}>
-              <label className='font-extrabold py-1'>Базовый ресурс</label>
+              <label className='font-extrabold py-1'>Базовый теоретический ресурс</label>
               <label className='font-semibold py-1'>Действителен при условии эксплуатации без ударов и вибраций,</label>
               <label className='font-semibold py-1'>попадании твердых частиц или жидкостей на механизм.</label>
               <label className='font-semibold py-1'>При наличии ударов и вибраций:</label>
