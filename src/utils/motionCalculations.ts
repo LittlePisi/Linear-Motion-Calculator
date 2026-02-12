@@ -168,7 +168,7 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
   
 
   // Calculate load inertia referred to motor shaft
-  const loadInertia = (mass * Math.pow(leadInMeters / (2 * Math.PI), 2) + externalInertiaScaled + Mod_fullInertia + G_Inertia);
+  const loadInertia = (mass * Math.pow(leadInMeters / (2 * Math.PI), 2) + Mod_fullInertia + G_Inertia);
 
   // Calculate inertia ratio
   const inertiaRatio = 1 + ((loadInertia / Math.pow(reductionRatio, 2)) / motorRotorInertiaScaled);
@@ -373,6 +373,16 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     console.log({G_Inertia});
 
     console.log("Calculated parameters:");
+    
+    console.log({loadInertia});
+    console.log({G_Inertia});
+    console.log({Mod_fullInertia});
+    console.log({motorRotorInertiaScaled});
+    console.log({externalInertiaScaled});
+    
+    console.log({inertiaRatio});
+    
+
     console.log({accelerationTorque});
     console.log({constantVelocityTorque});
     console.log({decelerationTorque});

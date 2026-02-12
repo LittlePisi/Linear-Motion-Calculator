@@ -401,7 +401,7 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
           return (
             Number(module.mod_maxSpeed) > v1/1000 &&
             Number(module.mod_maxAcc) > Math.max(acceleration/1000, deceleration/1000) &&
-            ((Number(module.M_maxTorque) - Number(module.M_idleTorque)) * 0.08) < maxTorque &&
+            //((Number(module.M_maxTorque) - Number(module.M_idleTorque)) * 0.08) < maxTorque &&
             ((Number(module.M_maxTorque) - Number(module.M_idleTorque)) * 0.85) > maxTorque &&
             serviceLife > 1500
           );
