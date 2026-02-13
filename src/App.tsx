@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Info } from 'lucide-react';
+import { Info, Video } from 'lucide-react';
 import InputParameters from './components/InputParameters';
 import ResultsDisplay from './components/ResultsDisplay';
 import { calculateMotionParameters } from './utils/motionCalculations';
@@ -12,6 +12,7 @@ import SolutionFinder from './components/AutomaticSolutionFinder';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
   const [params, setParams] = useLocalStorage<MotionParameters>('motionCalculatorParams', {
     stroke: 1000,
     travelTime: 2,
@@ -83,14 +84,31 @@ function App() {
     }`}>
       <div className="container mx-auto px-4 py-8">
         <header className="text-center mt-0 mb-12 print:hidden">
-          <a href='https://smarta.ru/'><img className="logo-picture" src={mainLogo} width="150" height="150" align='left' /></a>
+          <div className="flex items-center justify-between">
+            <a href='https://smarta.ru/'><img className="logo-picture" src={mainLogo} width="150" height="150" align='left' /></a>
+            
+            <button
+              onClick={() => setShowVideo(true)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                darkMode 
+                  ? 'bg-blue-300 hover:bg-blue-400 text-gray-800' 
+                  : 'bg-blue-300 hover:bg-blue-400  text-gray-800 shadow-md shadow-gray-500'
+              }`}
+            >
+              <Video className={darkMode ? 'text-indigo-600' : 'text-indigo-600'} />
+              Видеоинструкция
+            </button>
+          </div>
+          
           <br></br> 
           <br></br> 
           <div className="flex items-center justify-center gap-3 mb-4">                                       
             <h1 className={`text-4xl font-bold pb-2 ${darkMode ? 'text-white' : 'text-gray-800'} border-left`}>     
                     Drive Calculation Tool
             </h1>
-          </div>       
+          </div>
+
+                
           
 
           
@@ -154,6 +172,49 @@ function App() {
           <p>• Компания ООО "СМАРТ Автоматизация" не несет ответственности за претензии, связанные с неспособностью достичь рассчитанных результатов, в том числе в случае ошибок в расчетах.</p>
           <p>• Компания ООО "СМАРТ Автоматизация" не гарантирует пригодность любого оборудования, заказанного в соответствии с использованием этого программного обеспечения для какой-либо конкретной цели, если эта цель не была полностью объяснена компании SMARTA.</p>
         </div>
+
+        {/* Модальное окно с видео */}
+        {showVideo && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4"
+            onClick={() => setShowVideo(false)} // Закрытие по клику на фон
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') setShowVideo(false);
+            }}
+            role="dialog"
+            aria-modal="true"
+            tabIndex={-1}
+          >
+            {/* Видео контейнер (останавливает всплытие кликов) */}
+            <div
+              className="relative w-full max-w-3xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl"
+              onClick={(e) => e.stopPropagation()} // Не закрывать при клике внутри видео
+            >
+              {/* Кнопка закрытия */}
+              <button
+                onClick={() => setShowVideo(false)}
+                className="absolute -top-12 right-0 text-white bg-red-600 hover:bg-red-500 w-10 h-10 rounded-full flex items-center justify-center text-xl font-bold z-10"
+                aria-label="Закрыть видео"
+              >
+                ×
+              </button>
+
+              {/* Видео */}
+              <video
+                width="100%"
+                height="100%"
+                controls
+                autoPlay
+                className="object-contain"
+                onEnded={() => console.log("Видео завершено")}
+              >
+                <source src="/manual.mp4" type="video/mp4" />
+                Ваш браузер не поддерживает видео.
+              </video>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );
