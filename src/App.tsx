@@ -5,7 +5,6 @@ import ResultsDisplay from './components/ResultsDisplay';
 import { calculateMotionParameters } from './utils/motionCalculations';
 import { MotionParameters, MotionResults } from './types';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import mainLogo from '../logo.svg';
 import {Moon, Sun} from 'lucide-react';
 import SolutionFinder from './components/AutomaticSolutionFinder'; 
 
@@ -85,7 +84,7 @@ function App() {
       <div className="container mx-auto px-4 py-8">
         <header className="text-center mt-0 mb-12 print:hidden">
           <div className="flex items-center justify-between">
-            <a href='https://smarta.ru/'><img className="logo-picture" src={mainLogo} width="150" height="150" align='left' /></a>
+            <a href='https://smarta.ru/'><img className="logo-picture" src={'./pics/logo.svg'} width="150" height="150" align='left' /></a>
             
             <button
               onClick={() => setShowVideo(true)}

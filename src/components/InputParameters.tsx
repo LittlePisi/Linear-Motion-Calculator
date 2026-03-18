@@ -180,7 +180,7 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
               <div className="inline-flex items-center gap-2">
 
               </div>
-              <img className="picture place-self-center" src={params.isVertical ? 'https://i.postimg.cc/mgyCwqKr/2025-09-29-16-26-04.png' : 'https://i.postimg.cc/Hk9X2KF1/2025-09-29-16-24-14.png'} width={params.isVertical ? "100" : "200"} height="50"/>
+              <img className="picture place-self-center" src={params.isVertical ? './pics/vertical.png' : './pics/horizontal.png'} width={params.isVertical ? "100" : "200"} height="50"/>
             </div>
           </ReactTooltip>
 
@@ -311,7 +311,7 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
         opacity={1}
       >
       <div className={`flex flex-col gap-1 rounded-md p-2 mb-0 ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white shadow-md shadow-gray-500 text-gray-700'}`}>
-              <img className="picture place-self-center" src={'https://i.postimg.cc/vHR3Fdnv/1-1.png'} width="200" height="200" />
+              <img className="picture place-self-center" src={'./pics/xyz.png'} width="200" height="200" />
       </div>
       </ReactTooltip>
       
@@ -413,7 +413,7 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
               <label className='font-semibold'>Макс. момент: {params.G_maxTorque} Н⋅м</label>
               <label className='font-semibold'>Макс. скорость: 3000 об/мин</label>
               <label className='font-semibold'>КПД: {params.G_eff * 100} %</label>
-              <img className="picture place-self-center" src={'https://i.postimg.cc/7LpTGqws/gearbox.png'} width="150" height="150"/>
+              <img className="picture place-self-center" src={'./pics/gearbox.png'} width="150" height="150"/>
             </div>
           </ReactTooltip>
           

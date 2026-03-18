@@ -622,7 +622,7 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
           </button>
           
       <div
-          className={`overflow-hidden transition-all duration-700 delay-100 ease-in-out ${
+          className={`overflow-hidden transition-all duration-500 delay-300 ease-in-out ${
           isOpenRec ? 'opacity-100' : 'max-h-0 opacity-0'}`}>
 
           <h3 className={`grid grid-cols-2 gap-0 pb-3 text-base font-semibold items-center ${darkMode ? 'text-gray-300' : 'text-gray-700'} overflow-hidden transition-all duration-300 ease-in-out`}>Сортировка по типу привода
@@ -687,7 +687,18 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
               <div className={`flex-auto inline-grid grid-flow-col auto-cols-max gap-2 }`}>
                   {filteredLMData.length > 0 ? (
                       filteredLMData.map((item, index) => (
-                      <div key={index} className={`flex flex-col min-w-[182px] gap-1 p-6 rounded-xl ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'}`}>
+                          <div
+                            key={index}
+                            className={`flex flex-col min-w-[182px] gap-1 p-6 rounded-xl ${
+                              darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'
+                            } ${
+                              isOpenRec ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                            } transition-all duration-700 ease-out`}
+                            style={{
+                              transitionProperty: 'opacity, transform',
+                              transitionDelay: `${index * 100}ms`
+                            }}
+                          >
                           <label className='font-semibold'>{index+1}. {item.name}</label>
                           <div className='h-20'><img className='py-3' src={item.mod_pic} width="100" height="100"/></div>
                           <label className='text-base'><span className='font-semibold'>Ресурс:</span> {Number(item.calc_GSL) > 10000 ? ("10000+") : (Number(item.calc_GSL).toFixed(0))} км</label>
@@ -725,13 +736,21 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
                           >
                               <div className={`text-sm  rounded-lg p-1 mt-1 ${darkMode ? 'text-gray-300 bg-gray-600' : 'text-gray-700 bg-white'} `}>
                               {item.suitableMotors.map((sm, si) => (
-                                  <div key={si} className="flex items-center gap-1 mr-1 mb-1 p-0.5 pt-3">
+                                  <div
+                                    key={si}
+                                    className={`flex items-center gap-1 mr-1 mb-1 p-0.5 pt-3 transition-all duration-700 ${
+                                      isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+                                    }`}
+                                    style={{
+                                      transitionProperty: 'opacity, transform',
+                                      transitionDelay: `${isOpen ? si * 100 : 0}ms`
+                                    }}
+                                  >
                                     {si + 1}.
                                     <img src={sm.motorPic} width="50" height="50" className="mr-2" alt={sm.motorName} />
                                     <div className='flex flex-col gap-1'> 
                                       <label><span className='font-semibold'>Двигатель:</span> {sm.motorName}</label>
                                       {Number(item.mod_wGearbox) > 0 ? <label><span className='font-semibold'>Редуктор:</span> {item.mod_GBtype}{sm.ratio}S1-{sm.mot_GBtype} </label> : ""}
-                                      {/*<label>Загрузка двигателя макс.: {sm.motorLoad}%</label>*/}
                                       <label><span className='font-semibold'>Загрузка двигателя:</span> {sm.motorMeanLoad}%</label> 
                                       <label><span className='font-semibold'>Соотношение моментов инерции:</span> {sm.inertiaRatio}</label>
 
