@@ -692,11 +692,11 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
                             className={`flex flex-col min-w-[182px] gap-1 p-6 rounded-xl ${
                               darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'
                             } ${
-                              isOpenRec ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                              isOpenRec ? 'opacity-100 mt-0' : 'opacity-0 mt-16'
                             } transition-all duration-700 ease-out`}
                             style={{
                               transitionProperty: 'opacity, transform',
-                              transitionDelay: `${index * 100}ms`
+                              transitionDelay: `${index * 100}ms`,
                             }}
                           >
                           <label className='font-semibold'>{index+1}. {item.name}</label>
@@ -739,7 +739,7 @@ const SolutionFinder: React.FC<SolutionFinderProps> = ({ props, darkMode }) => {
                                   <div
                                     key={si}
                                     className={`flex items-center gap-1 mr-1 mb-1 p-0.5 pt-3 transition-all duration-700 ${
-                                      isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+                                      isOpen ? 'opacity-100 mt-0' : 'opacity-0 mt-16'
                                     }`}
                                     style={{
                                       transitionProperty: 'opacity, transform',

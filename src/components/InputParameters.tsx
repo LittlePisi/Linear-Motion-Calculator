@@ -366,8 +366,7 @@ const InputParameters: React.FC<InputParametersProps> = ({ params, setParams, da
                 color: '#222', 
                 padding: '1px', 
                 margin: '0px',
-                borderRadius: '6px' 
-                
+                borderRadius: '6px'
                 }}               
                 opacity={1}
           >

@@ -334,8 +334,8 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
               ? 0
               : ((mass * GRAVITY) * lever_My/1000);
   const My = isVertical
-              ? ((mass * GRAVITY) * lever_Mz/1000 + mod_lever/1000) - (externalForce * lever_Fz/1000) + (Fxm * mod_Zd/1000)
-              : (Fxm * lever_Mz/1000 + mod_lever/1000) + ((mass * GRAVITY) * lever_Mx/1000) - (externalForce * lever_Fz/1000) + (Fxm * mod_Zd/1000);
+              ? ((mass * GRAVITY) * lever_Mz/1000 + mod_lever/1000) - (externalForce * lever_Fz/1000)
+              : (mass * Math.max(acceleration, deceleration)/1000 + mod_lever/1000) + ((mass * GRAVITY) * lever_Mx/1000) - (externalForce * lever_Fz/1000);
   const Mz = isVertical
               ? ((mass * GRAVITY) * lever_My/1000) - (externalForce * lever_Fy/1000)
               : (externalForce * lever_Fy/1000);
@@ -382,7 +382,6 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     
     console.log({inertiaRatio});
     
-
     console.log({accelerationTorque});
     console.log({constantVelocityTorque});
     console.log({decelerationTorque});
@@ -399,6 +398,7 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
     console.log({Mx});
     console.log({My});
     console.log({Mz});
+    console.log({mod_guideServiceLife});
 
   // Calculating max allowable motor torque at slope
     const k = (M_max - 0) / (N_max - N_d);

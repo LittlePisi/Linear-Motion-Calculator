@@ -79,11 +79,18 @@ const GBComboBox: React.FC<GBComboBoxProps> = ({
       </label>
     
     <div className="flex-1 relative">
+
+      <div 
+        className="hidden print:block px-3 h-9 text-sm leading-9 rounded-lg border border-gray-300 bg-transparent text-gray-700"
+      >
+        {selectedGBSetName}
+      </div>
+
       <select
         id="gearbox-parameterSet"
         value={selectedGBSetName}
         onChange={(e) => handleChange(e.target.value)}
-        className={`mt-0 px-3 block w-full h-9 text-sm rounded-lg shadow-sm focus:border-blue-400 focus:ring-blue-300 sm:text-sm ${
+        className={`print:hidden mt-0 px-3 block w-full h-9 text-sm rounded-lg shadow-sm focus:border-blue-400 focus:ring-blue-300 sm:text-sm ${
           darkMode ? 'bg-gray-700 border border-gray-600 text-gray-200 focus:border-gray-500'
                    : ' bg-gray-100 border border-gray-300 text-gray-700 focus:border-blue-500'
         }`}
