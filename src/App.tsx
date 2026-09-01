@@ -207,7 +207,7 @@ function App() {
                 className="object-contain"
                 onEnded={() => console.log("Видео завершено")}
               >
-                <source src="/manual.mp4" type="video/mp4" />
+                <source src="./pics/manual.mp4" type="video/mp4" />
                 Ваш браузер не поддерживает видео.
               </video>
             </div>
