@@ -334,11 +334,11 @@ export function calculateMotionParameters(params: MotionParameters): MotionResul
               ? 0
               : ((mass * GRAVITY) * lever_My/1000);
   const My = isVertical
-              ? ((mass * GRAVITY) * lever_Mz/1000 + mod_lever/1000) - (externalForce * lever_Fz/1000)
-              : (mass * Math.max(acceleration, deceleration)/1000 + mod_lever/1000) + ((mass * GRAVITY) * lever_Mx/1000) - (externalForce * lever_Fz/1000);
+              ? ((mass * GRAVITY) * (lever_Mz + mod_lever)/1000) - (externalForce * lever_Fz/1000)
+              : (mass * Math.max(acceleration, deceleration)/1000 * (lever_Mz + mod_lever)/1000) + ((mass * GRAVITY) * lever_Mx/1000) - (externalForce * lever_Fz/1000);
   const Mz = isVertical
               ? ((mass * GRAVITY) * lever_My/1000) - (externalForce * lever_Fy/1000)
-              : (externalForce * lever_Fy/1000);
+              : (mass * Math.max(acceleration, deceleration)/1000 * lever_Fz/1000) - (externalForce * lever_Fy/1000);
 
   const fv = Math.abs(Mx)/mod_Mx + Math.abs(My)/mod_My + Math.abs(Mz)/mod_Mz;
   const mod_guideServiceLife = 1 / Math.pow(fv, 3) * mod_GSLM;
